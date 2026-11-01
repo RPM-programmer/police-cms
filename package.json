@@ -1,0 +1,33 @@
+{
+  "name": "police-cms",
+  "version": "0.0.1",
+  "description": "CMS-модуль управления базами данных и роутами для правоохранительных органов (паспорта, штрафы, суды)",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RPM-programmer/police-cms.git"
+  },
+  "keywords": [
+    "police",
+    "cms",
+    "router",
+    "database",
+    "law-enforcement",
+    "registry",
+    "citizen"
+  ],
+  "author": {
+    "name": "prm-programmer",
+    "email": "promanenko214@gmail.com",
+    "url": "https://github.com/RPM-programmer"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RPM-programmer/police-cms/issues"
+  },
+  "homepage": "https://github.com/RPM-programmer/police-cms#readme"
+}
