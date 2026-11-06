@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>POLICE-CMS — главная</title>
+    <link rel="stylesheet" href="/gov/css/home.css" />
+    <link
+      rel="icon"
+      href="https://cdn-icons-png.flaticon.com/128/7506/7506556.png"
+    />
+    <script src="/gov/js/home.js"></script>
+  </head>
+  <body>
+    <div id="coin-container"></div>
+    <header>
+      <div class="logo">CITY</div>
+      <nav class="main-nav">
+        <a href="#info" class="nav-link" onclick="switchPage(event, 'info')"
+          >инфо</a
+        >
+        <span>-</span>
+        <a href="#gai" class="nav-link" onclick="switchPage(event, 'gai')"
+          >Гаи</a
+        >
+        <span>-</span>
+        <a
+          href="#passport"
+          class="nav-link"
+          onclick="switchPage(event, 'passport')"
+          >Паспортные данные</a
+        >
+        <span>-</span>
+        <a href="#about" class="nav-link" onclick="switchPage(event, 'about')"
+          >о нас</a
+        >
+        <span>-</span>
+        <a
+          href="#contacts"
+          class="nav-link"
+          onclick="switchPage(event, 'contacts')"
+          >контакты</a
+        >
+      </nav>
+      <div class="dropdown-area">
+        <div class="dropdown" id="servicesDropdown">
+          <button class="login-btn" onclick="toggleDropdown(event)">
+            Войти
+          </button>
+          <div class="dropdown-content">
+            <div class="dropdown-inner">
+              <a href="/gov/sti/html/login.html">Гаи</a>
+              <a href="/gov/ssc/html/login.html"
+                >Государственная Безопастность</a
+              >
+              <a href="/gov/nim/html/login.html">Инспекционное Минестерство</a>
+              <a href="/gov/nmg/html/login.html">Судебное синестерство</a>
+              <a href="/gov/nbs/html/login.html">Пограничное Минестерство</a>
+              <a href="/gov/npd/html/login.html">База данных</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dropdown-area">
+        <div class="dropdown" id="servicesDropdown">
+          <button class="dropdown-btn" onclick="toggleDropdown(event)">
+            Службы
+          </button>
+          <div class="dropdown-content">
+            <div class="dropdown-inner">
+              <a href="#gai" onclick="switchPage(event, 'gai')">Гаи</a>
+              <a href="#kgb" onclick="switchPage(event, 'kgb')"
+                >Государственная Безопастность</a
+              >
+              <a href="#im" onclick="switchPage(event, 'im')"
+                >Инспекционное Минестерство</a
+              >
+              <a href="#court" onclick="switchPage(event, 'court')"
+                >Судебное синестерство</a
+              >
+              <a href="#bm" onclick="switchPage(event, 'bm')"
+                >Пограничное Минестерство</a
+              >
+              <a href="#user" onclick="switchPage(event, 'user')"
+                >База данных</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main>
+      <section id="page-info" class="info-section active-page">
+        <h2>Информационный центр</h2>
+        <p>Police-cms — npm модуль для создания государственного сервера.</p>
+      </section>
+      <section id="page-gai" class="info-section" style="display: none">
+        <h2>Гаи</h2>
+        <hr class="general" />
+        <p>
+          Государственная Автомобильная Инспекция (ГАИ) — это специализированный
+          государственный орган, осуществляющий надзорный, контрольный и
+          разрешительный функционал в сфере обеспечения безопасности дорожного
+          движения
+        </p>
+        <hr />
+        <p>
+          Контактная информация:<br />
+          Получение водительских прав —
+          <span style="color: aqua" id="gai-get-driver-license"></span><br />
+          Устроится на работу —
+          <span id="gai-get-job" style="color: aqua"></span><br />
+        </p>
+        <hr />
+        <p>
+          Чтобы начать выберите
+          <i><b>Службы</b> → <b>Гаи</b></i> или нажмите
+          <a href="/gov/sti/html/home.html" title="ГАИ">сюда</a>
+        </p>
+      </section>
+      <section id="page-passport" class="info-section" style="display: none">
+        <h2>НПБД (NPD)</h2>
+        <p>
+          НПБД или NPD — это национальная паспортная база данных. Если проще то
+          это реестр всех людей.
+        </p>
+        <p>
+          Что-бы начать нажмите <i><b>Сервисы</b> → <b>Мед</b></i> или нажмите
+          <a href="/med/" title="med-cms">сюда</a>
+        </p>
+      </section>
+      <section id="page-about" class="info-section" style="display: none">
+        <h2>О нашем проекте</h2>
+        <p>
+          CITY "игра город" — это уникальная экосистема, симулирующая жизнь
+          современного мегаполиса. Проект запущен в 2026 году и сочетает в себе
+          продвинутую экономическую модель и ролевое взаимодействие.
+        </p>
+      </section>
+      <section id="page-contacts" class="info-section" style="display: none">
+        <h2>Контакты и Поддержка</h2>
+        <p>Возникли проблемы в работе сайта? Пишите...</p>
+        <p>
+          Наши контакты:
+          <a
+            href="https://invite.viber.com/?g2=AQA2%2BAuGjc0IKVUlWHvVuA0Rl9c4G4gP3WlS%2FfXsqUoBT9sKCsNU%2FXYghLl%2FLnHw"
+            >Viber</a
+          >
+          <a href="https://chat.google.com/room/AAQAygKGLtY?cls=7">Gmail</a>
+        </p>
+        <p>Почта — promanenko214@gmail.com</p>
+      </section>
+    </main>
+    <footer>
+      <p>&copy; 2026 police-cms</p>
+    </footer>
+  </body>
+</html>
