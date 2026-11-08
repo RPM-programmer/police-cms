@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ГАИ // Дежурная Часть</title>
+    <link rel="stylesheet" href="/gov/sti/css/style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="logo">ГАИ // ТЕРМИНАЛ</div>
+      <nav class="main-nav">
+        <a href="/gov/sti/html/home.html" class="nav-link">Главная</a>
+        <span>|</span>
+        <a href="/gov/sti/html/cabinet.html" class="nav-link"
+          >Кабинет Водителя</a
+        >
+        <span>|</span>
+        <a href="/gov/sti/html/terminal.html" class="nav-link"
+          >Оперативный Терминал</a
+        >
+      </nav>
+      <div class="dropdown-area">
+        <select id="userSessionSimulator" class="login-btn">
+          <option value="officer_1">Инспектор Петров</option>
+          <option value="boss_1">Начальник Сидоров</option>
+        </select>
+      </div>
+    </header>
+    <main>
+      <section class="info-section" style="max-width: 900px; width: 100%">
+        <h2>Рабочий терминал сотрудника ГАИ</h2>
+        <div class="dashboard-grid">
+          <div class="card">
+            <h3>📝 Новый протокол</h3>
+            <form id="addFineForm" onsubmit="createNewFine(event)">
+              <div class="form-group">
+                <label>Номер авто:</label
+                ><input
+                  type="text"
+                  id="fineCarNumber"
+                  class="form-control"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label>ФИО Водителя:</label
+                ><input
+                  type="text"
+                  id="fineOwnerName"
+                  class="form-control"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label>Нарушение:</label
+                ><input
+                  type="text"
+                  id="fineViolation"
+                  class="form-control"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label>Сумма ($):</label
+                ><input
+                  type="number"
+                  id="fineAmount"
+                  class="form-control"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                class="btn-submit"
+                style="background: #ff3b30"
+              >
+                Выписать штраф
+              </button>
+            </form>
+          </div>
+          <div class="card">
+            <h3>🏦 Выплата зарплаты (Начальник)</h3>
+            <form id="salaryForm" onsubmit="payEmployeeSalary(event)">
+              <div class="form-group">
+                <label>ID Сотрудника:</label
+                ><input
+                  type="text"
+                  id="salaryEmployeeId"
+                  class="form-control"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label>Счет в банке:</label
+                ><input
+                  type="text"
+                  id="salaryEmployeeBankId"
+                  class="form-control"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label>Сумма:</label
+                ><input
+                  type="number"
+                  id="salaryAmount"
+                  class="form-control"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                class="btn-submit"
+                style="background: #34c759"
+              >
+                Перевести средства
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="/gov/sti/js/terminal.js"></script>
+  </body>
+</html>

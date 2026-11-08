@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ГАИ // Кабинет Водителя</title>
+    <link rel="stylesheet" href="/gov/sti/css/style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="logo">ГАИ // ОПЛАТА</div>
+      <nav class="main-nav">
+        <a href="/gov/sti/html/home.html" class="nav-link">Главная</a>
+        <span>|</span>
+        <a href="/gov/sti/html/cabinet.html" class="nav-link"
+          >Кабинет Водителя</a
+        >
+        <span>|</span>
+        <a href="/gov/sti/html/terminal.html" class="nav-link"
+          >Оперативный Терминал</a
+        >
+      </nav>
+      <div class="dropdown-area">
+        <select
+          id="userSessionSimulator"
+          class="login-btn"
+          onchange="loadCabinetData()"
+        >
+          <option value="user_1">Иван Иванов (Гражданин)</option>
+        </select>
+      </div>
+    </header>
+    <main>
+      <section class="info-section" style="max-width: 900px; width: 100%">
+        <h2>Личный кабинет автовладельца</h2>
+        <div class="dashboard-grid">
+          <div class="card">
+            <h3>🚨 Мои неоплаченные штрафы</h3>
+            <div id="finesContainer"><p>Загрузка списка...</p></div>
+          </div>
+          <div class="card">
+            <h3>💳 Электронная оплата</h3>
+            <form id="paymentForm" onsubmit="executeFinePayment(event)">
+              <input type="hidden" id="selectedFineId" />
+              <div class="form-group">
+                <label>ID банковского счёта:</label>
+                <input
+                  type="text"
+                  id="bankAccountId"
+                  class="form-control"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label>ПИН-код счета:</label>
+                <input
+                  type="password"
+                  id="bankPinCode"
+                  class="form-control"
+                  required
+                />
+              </div>
+              <button type="submit" id="payBtn" class="btn-submit">
+                Выплатить
+              </button>
+              <div id="bankNotice" class="bank-notice"></div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="/gov/sti/js/cabinet.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", loadCabinetData);
+    </script>
+  </body>
+</html>

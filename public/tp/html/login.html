@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ГАИ — Вход</title>
+    <link rel="stylesheet" href="/gov/sti/css/style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="logo">ГАИ</div>
+    </header>
+
+    <main>
+      <section class="info-section" style="max-width: 450px; width: 100%">
+        <h2 style="text-align: center; margin-bottom: 20px" id="authTitle">
+          Вход
+        </h2>
+        <div
+          class="auth-tabs"
+          style="display: flex; gap: 10px; margin-bottom: 25px"
+        >
+          <button
+            type="button"
+            id="tab-citizen"
+            class="login-btn"
+            style="flex: 1; background: #006aff; font-weight: 600"
+            onclick="switchAuthMode('citizen')"
+          >
+            Гражданин
+          </button>
+          <button
+            type="button"
+            id="tab-worker"
+            class="login-btn"
+            style="flex: 1; opacity: 0.5"
+            onclick="switchAuthMode('worker')"
+          >
+            Сотрудник
+          </button>
+        </div>
+
+        <form id="loginForm" onsubmit="executeLogin(event)">
+          <input type="hidden" id="authRole" value="citizen" />
+
+          <div class="form-group">
+            <label id="labelIdentifier" for="authUserId"
+              >ID гражданина (UID):</label
+            >
+            <input
+              type="text"
+              id="authUserId"
+              class="form-control"
+              placeholder="Например: 0123456789"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label id="labelCredential" for="authPassword"
+              >ID паспорта (PID):</label
+            >
+            <input
+              type="password"
+              id="authPassword"
+              class="form-control"
+              placeholder="••••••••"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            class="btn-submit"
+            style="margin-top: 10px"
+            id="submitAuthBtn"
+          >
+            Войти
+          </button>
+        </form>
+
+        <div
+          id="loginError"
+          class="bank-notice"
+          style="color: #ff3b30; display: none; margin-top: 15px"
+        ></div>
+      </section>
+    </main>
+
+    <footer>&copy; 2026 POLICE-CMS</footer>
+
+    <script src="/gov/sti/js/login.js"></script>
+  </body>
+</html>
