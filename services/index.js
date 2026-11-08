@@ -1,0 +1,58 @@
+module.exports = {
+  tpolice: {
+    getMyFines: require("./tpolice/getMyFines"),
+    payFine: require("./tpolice/payFine"),
+    addFine: require("./tpolice/addFine"),
+    bossPaySalary: require("./tpolice/bossPaySalary"),
+    hireWorker: require("./tpolice/hireWorker"),
+    fireWorker: require("./tpolice/fireWorker"),
+    getCarOwner: require("./tpolice/getCarOwner"),
+  },
+  police: {
+    createCall: require("./police/createCall"),
+    getActiveCalls: require("./police/getActiveCalls"),
+    takeCall: require("./police/takeCall"),
+    addOrientation: require("./police/addOrientation"),
+    getOrientations: require("./police/getOrientations"),
+    hireWorker: require("./police/hireWorker"),
+    fireWorker: require("./police/fireWorker"),
+    addProtocol: require("./police/addProtocol"),
+    arrestCitizen: require("./police/arrestCitizen"),
+  },
+  securityGuard: {
+    applyContract: require("./security_guard/applyContract"),
+    approveContract: require("./security_guard/approveContract"),
+    triggerPanic: require("./security_guard/triggerPanic"),
+    fireWorker: require("./security_guard/fireWorker"),
+  },
+  court: {
+    hireWorker: require("./court/hireWorker"),
+    fireWorker: require("./court/fireWorker"),
+    createCase: require("./court/createCase"),
+    addSolution: require("./court/addSolution"),
+  },
+  sequrity: {
+    hireWorker: require("./sequrity/hireWorker"),
+    fireWorker: require("./sequrity/fireWorker"),
+    openAffair: require("./sequrity/openAffair"),
+    addSuspect: require("./sequrity/addSuspect"),
+  },
+  border: {
+    hireWorker: require("./border/hireWorker"),
+    fireWorker: require("./border/fireWorker"),
+    registerPass: require("./border/registerPass"),
+    getCountryDemographics: require("./border/getCountryDemographics"),
+  },
+  inspect: {
+    hireWorker: require("./inspect/hireWorker"),
+    fireWorker: require("./inspect/fireWorker"),
+    addCheck: require("./inspect/addCheck"),
+    getPendingInstitutions: require("./inspect/getPendingInstitutions"),
+  },
+  uregistry: {
+    getQuickProfile: require("./uregistry/getQuickProfile"),
+    createCitizen: require("./uregistry/createCitizen"),
+    killCitizen: require("./uregistry/killCitizen"),
+    updateResidency: require("./uregistry/updateResidency"),
+  },
+};
