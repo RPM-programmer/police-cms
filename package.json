@@ -1,43 +1,28 @@
 {
   "name": "police-cms",
-  "version": "1.0.0-beta.1",
-  "description": "CMS-модуль управления базами данных и роутами для правоохранительных органов (паспорта, штрафы, суды)",
-  "main": "index.js",
-  "type": "commonjs",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "version": "1.0.0-beta.3",
+  "description": "npm модуль готового api для создания сайта гос служб",
+  "homepage": "https://github.com/RPM-programmer/police-cms#readme",
+  "bugs": {
+    "url": "https://github.com/RPM-programmer/police-cms/issues"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/RPM-programmer/police-cms.git"
   },
-  "keywords": [
-    "police",
-    "cms",
-    "router",
-    "database",
-    "law-enforcement",
-    "registry",
-    "citizen"
-  ],
-  "author": {
-    "name": "prm-programmer",
-    "email": "promanenko214@gmail.com",
-    "url": "https://github.com/RPM-programmer"
-  },
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/RPM-programmer/police-cms/issues"
+  "author": "prm-programmer",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
   },
-  "homepage": "https://github.com/RPM-programmer/police-cms#readme",
-  "dependencies": {
-    "@dotenvx/dotenvx": "^2.38.2",
-    "chalk-palette": "^3.0.0",
-    "custom-color-logs": "^3.2.1",
-    "express": "^5.3.0",
-    "scan-game-passports": "^2.0.0",
-    "sequelize": "^6.37.8",
-    "sqlite3": "^6.0.1",
-    "sqlite3-offline": "^4.3.1"
-  }
+  "keywords": [
+    "api",
+    "police",
+    "express",
+    "sequelize",
+    "database",
+    "sqlite"
+  ]
 }
