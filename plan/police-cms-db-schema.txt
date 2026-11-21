@@ -1,0 +1,645 @@
+================================================================================
+POLICE-CMS — ПОЛНАЯ JSON-СХЕМА БАЗЫ ДАННЫХ (42 ТАБЛИЦЫ SEQUELIZE)
+Архитектура: 1 таблица = 1 файл модели (.js)
+================================================================================
+
+--------------------------------------------------------------------------------
+РАЗДЕЛ 1. ЯДРО, ГРАЖДАНЕ, КОМПАНИИ И СИСТЕМА (models/core/)
+--------------------------------------------------------------------------------
+
+1. Citizen.js (Граждане — Пользовательская БД)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "uid": "STRING(32), UNIQUE, NOT NULL (пример: UID-849201)",
+  "pid": "STRING(32), UNIQUE, NOT NULL (пример: MP-4920184)",
+  "firstName": "STRING(64), NOT NULL",
+  "lastName": "STRING(64), NOT NULL",
+  "middleName": "STRING(64), ALLOW NULL",
+  "birthDate": "DATEONLY, NOT NULL",
+  "phone": "STRING(32), UNIQUE, NOT NULL",
+  "email": "STRING(128), UNIQUE, NOT NULL",
+  "passwordHash": "STRING(255), NOT NULL",
+  "photoUrl": "STRING(512), ALLOW NULL",
+  "isWanted": "BOOLEAN, DEFAULT false",
+  "isArrested": "BOOLEAN, DEFAULT false",
+  "travelBanned": "BOOLEAN, DEFAULT false",
+  "criminalRecordsCount": "INTEGER, DEFAULT 0",
+  "registeredByUid": "STRING(32), ALLOW NULL",
+  "status": "ENUM('active', 'deceased', 'deported', 'blocked'), DEFAULT 'active'",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+2. Company.js (Компании / Юрлица и заявки на регистрацию)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "cid": "STRING(32), UNIQUE, NOT NULL (пример: CID-100492)",
+  "name": "STRING(128), UNIQUE, NOT NULL",
+  "ownerUid": "STRING(32), NOT NULL (FOREIGN KEY -> Citizen.uid)",
+  "ownerPid": "STRING(32), NOT NULL",
+  "phone": "STRING(32), NOT NULL",
+  "email": "STRING(128), NOT NULL",
+  "initialCapital": "DECIMAL(15, 2), NOT NULL, DEFAULT 0.00",
+  "currentBalance": "DECIMAL(15, 2), NOT NULL, DEFAULT 0.00",
+  "activityType": "STRING(128), ALLOW NULL",
+  "isFrozen": "BOOLEAN, DEFAULT false",
+  "status": "ENUM('pending', 'approved', 'rejected', 'suspended', 'liquidated'), DEFAULT 'pending'",
+  "reviewedByUid": "STRING(32), ALLOW NULL",
+  "reviewComment": "TEXT, ALLOW NULL",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+3. Department.js (Государственные службы и ведомства)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "code": "ENUM('militia', 'gai', 'guard', 'border', 'court', 'inspection', 'kgb'), UNIQUE, NOT NULL",
+  "name": "STRING(128), NOT NULL",
+  "shortName": "STRING(32), NOT NULL",
+  "badgeColor": "STRING(16), NOT NULL",
+  "budgetBalance": "DECIMAL(15, 2), DEFAULT 0.00",
+  "isEmergencyLocked": "BOOLEAN, DEFAULT false",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+4. DepartmentRank.js (Звания, должности и матрица прав RBAC)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "departmentCode": "ENUM('militia', 'gai', 'guard', 'border', 'court', 'inspection', 'kgb'), NOT NULL",
+  "level": "INTEGER, NOT NULL (иерархия от 1 до 20)",
+  "title": "STRING(64), NOT NULL",
+  "permissions": "JSON, NOT NULL (массив прав: ['citizens.read', 'wanted.create', ...])",
+  "canHireFire": "BOOLEAN, DEFAULT false",
+  "canPublishNews": "BOOLEAN, DEFAULT false",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+5. Officer.js (Штат сотрудников ведомств)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "badgeNumber": "STRING(32), UNIQUE, NOT NULL",
+  "citizenUid": "STRING(32), NOT NULL (FOREIGN KEY -> Citizen.uid)",
+  "departmentCode": "ENUM('militia', 'gai', 'guard', 'border', 'court', 'inspection', 'kgb'), NOT NULL",
+  "rankId": "INTEGER, NOT NULL (FOREIGN KEY -> DepartmentRank.id)",
+  "division": "STRING(128), ALLOW NULL",
+  "clearanceLevel": "INTEGER, DEFAULT 0 (0 - нет, 3 - ДСП, 2 - Секретно, 1 - Сов. секретно)",
+  "extraPermissions": "JSON, DEFAULT []",
+  "isSuspended": "BOOLEAN, DEFAULT false",
+  "hiredByUid": "STRING(32), ALLOW NULL",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+6. News.js (Лента новостей на главной странице)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "title": "STRING(255), NOT NULL",
+  "content": "TEXT, NOT NULL",
+  "photoUrl": "STRING(512), ALLOW NULL",
+  "departmentCode": "ENUM('militia', 'gai', 'guard', 'border', 'court', 'inspection', 'kgb', 'system'), NOT NULL",
+  "badgeColor": "STRING(16), DEFAULT '#2563eb'",
+  "authorUid": "STRING(32), NOT NULL (FOREIGN KEY -> Citizen.uid)",
+  "isEmergency": "BOOLEAN, DEFAULT false",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+7. OfficialDocument.js (Единый реестр документов СЭД с ЭЦП)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "docNumber": "STRING(48), UNIQUE, NOT NULL",
+  "docType": "ENUM('warrant', 'summons', 'certificate', 'license', 'decree', 'act'), NOT NULL",
+  "issuerDept": "STRING(32), NOT NULL",
+  "issuerUid": "STRING(32), NOT NULL",
+  "recipientType": "ENUM('citizen', 'company', 'department'), NOT NULL",
+  "recipientId": "STRING(32), NOT NULL",
+  "title": "STRING(255), NOT NULL",
+  "body": "TEXT, NOT NULL",
+  "signatureHash": "STRING(255), NOT NULL",
+  "status": "ENUM('active', 'revoked', 'expired'), DEFAULT 'active'",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+8. InteragencyRequest.js (Межведомственные запросы и поручения)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "requestNumber": "STRING(32), UNIQUE, NOT NULL",
+  "fromDept": "STRING(32), NOT NULL",
+  "toDept": "STRING(32), NOT NULL",
+  "initiatorUid": "STRING(32), NOT NULL",
+  "handlerUid": "STRING(32), ALLOW NULL",
+  "requestType": "STRING(64), NOT NULL",
+  "payload": "JSON, NOT NULL",
+  "responseNote": "TEXT, ALLOW NULL",
+  "status": "ENUM('pending', 'in_progress', 'approved', 'rejected'), DEFAULT 'pending'",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+9. SystemState.js (Состояние государства: режимы ЧП / КТО)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "mode": "ENUM('normal', 'high_alert', 'cto', 'emergency'), DEFAULT 'normal'",
+  "activatedByDept": "STRING(32), ALLOW NULL",
+  "activatedByUid": "STRING(32), ALLOW NULL",
+  "reason": "TEXT, ALLOW NULL",
+  "bordersClosed": "BOOLEAN, DEFAULT false",
+  "curfewActive": "BOOLEAN, DEFAULT false",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+10. AuditLog.js (Неизменяемый журнал аудита всех действий)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "actorUid": "STRING(32), ALLOW NULL",
+  "departmentCode": "STRING(32), ALLOW NULL",
+  "action": "STRING(128), NOT NULL",
+  "targetTable": "STRING(64), NOT NULL",
+  "targetRecordId": "STRING(64), ALLOW NULL",
+  "beforeData": "JSON, ALLOW NULL",
+  "afterData": "JSON, ALLOW NULL",
+  "ipAddress": "STRING(64), ALLOW NULL",
+  "createdAt": "DATE"
+}
+
+--------------------------------------------------------------------------------
+РАЗДЕЛ 2. МИЛИЦИЯ / МВД (models/police/)
+--------------------------------------------------------------------------------
+
+11. EmergencyCall.js (Вызовы дежурной части 102)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "callCode": "STRING(24), UNIQUE, NOT NULL",
+  "callerUid": "STRING(32), ALLOW NULL",
+  "location": "STRING(255), NOT NULL",
+  "description": "TEXT, NOT NULL",
+  "priority": "ENUM('low', 'medium', 'high', 'critical'), DEFAULT 'medium'",
+  "assignedUnit": "STRING(64), ALLOW NULL",
+  "officerUid": "STRING(32), ALLOW NULL",
+  "status": "ENUM('new', 'dispatched', 'on_scene', 'closed', 'false_alarm'), DEFAULT 'new'",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+12. CrimeReport.js (Заявления граждан в КУСП)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "kuspNumber": "STRING(32), UNIQUE, NOT NULL",
+  "applicantUid": "STRING(32), NOT NULL",
+  "suspectUid": "STRING(32), ALLOW NULL",
+  "incidentDate": "DATE, NOT NULL",
+  "statementText": "TEXT, NOT NULL",
+  "acceptedByUid": "STRING(32), ALLOW NULL",
+  "status": "ENUM('registered', 'checking', 'case_opened', 'refused'), DEFAULT 'registered'",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+13. CriminalCase.js (Уголовные и административные дела)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "caseNumber": "STRING(32), UNIQUE, NOT NULL",
+  "articleCode": "STRING(64), NOT NULL",
+  "title": "STRING(255), NOT NULL",
+  "summary": "TEXT, NOT NULL",
+  "investigatorUid": "STRING(32), NOT NULL",
+  "departmentCode": "ENUM('militia', 'kgb'), DEFAULT 'militia'",
+  "status": "ENUM('open', 'suspended', 'sent_to_court', 'closed'), DEFAULT 'open'",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+14. CaseParticipant.js (Фигуранты и участники уголовного дела)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "caseId": "INTEGER, NOT NULL (FOREIGN KEY -> CriminalCase.id)",
+  "citizenUid": "STRING(32), NOT NULL (FOREIGN KEY -> Citizen.uid)",
+  "role": "ENUM('suspect', 'accused', 'victim', 'witness', 'lawyer'), NOT NULL",
+  "notes": "TEXT, ALLOW NULL",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+15. CaseEvidence.js (Вещественные доказательства и протоколы допросов)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "caseId": "INTEGER, NOT NULL (FOREIGN KEY -> CriminalCase.id)",
+  "type": "ENUM('physical_item', 'interrogation_protocol', 'expertise', 'media'), NOT NULL",
+  "title": "STRING(255), NOT NULL",
+  "description": "TEXT, NOT NULL",
+  "attachmentUrl": "STRING(512), ALLOW NULL",
+  "addedByUid": "STRING(32), NOT NULL",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+16. DetentionRecord.js (ИВС и протоколы задержания)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "detaineeUid": "STRING(32), NOT NULL (FOREIGN KEY -> Citizen.uid)",
+  "arrestingOfficerUid": "STRING(32), NOT NULL",
+  "reason": "TEXT, NOT NULL",
+  "seizedItems": "JSON, DEFAULT []",
+  "detainedAt": "DATE, NOT NULL",
+  "releaseDeadline": "DATE, NOT NULL",
+  "status": "ENUM('detained', 'released', 'transferred_to_prison'), DEFAULT 'detained'",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+17. WantedPerson.js (Оперативный розыск и ориентировки)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "targetUid": "STRING(32), NOT NULL (FOREIGN KEY -> Citizen.uid)",
+  "initiatedByDept": "ENUM('militia', 'kgb', 'court'), NOT NULL",
+  "initiatorUid": "STRING(32), NOT NULL",
+  "article": "STRING(128), NOT NULL",
+  "reason": "TEXT, NOT NULL",
+  "dangerLevel": "ENUM('low', 'medium', 'high', 'critical'), DEFAULT 'medium'",
+  "photoSketchUrl": "STRING(512), ALLOW NULL",
+  "status": "ENUM('active', 'captured', 'cancelled'), DEFAULT 'active'",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+18. ForensicData.js (Криминалистическая база: дактилоскопия и ДНК)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "citizenUid": "STRING(32), UNIQUE, NOT NULL (FOREIGN KEY -> Citizen.uid)",
+  "fingerprintHash": "STRING(128), UNIQUE, NOT NULL",
+  "dnaCode": "STRING(128), UNIQUE, ALLOW NULL",
+  "bloodType": "STRING(8), ALLOW NULL",
+  "specialMarks": "TEXT, ALLOW NULL",
+  "recordedByUid": "STRING(32), NOT NULL",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+--------------------------------------------------------------------------------
+РАЗДЕЛ 3. ГАИ / ГОСАВТОИНСПЕКЦИЯ (models/gai/)
+--------------------------------------------------------------------------------
+
+19. Vehicle.js (Реестр транспортных средств)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "vin": "STRING(32), UNIQUE, NOT NULL",
+  "plateNumber": "STRING(24), UNIQUE, NOT NULL",
+  "brand": "STRING(64), NOT NULL",
+  "model": "STRING(64), NOT NULL",
+  "color": "STRING(32), NOT NULL",
+  "ownerType": "ENUM('citizen', 'company', 'department'), NOT NULL",
+  "ownerId": "STRING(32), NOT NULL",
+  "isStolen": "BOOLEAN, DEFAULT false",
+  "isIntercepted": "BOOLEAN, DEFAULT false",
+  "hasRegBan": "BOOLEAN, DEFAULT false",
+  "isImpounded": "BOOLEAN, DEFAULT false",
+  "techInspectionValidUntil": "DATEONLY, ALLOW NULL",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+20. DriverLicense.js (Водительские удостоверения)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "licenseNumber": "STRING(32), UNIQUE, NOT NULL",
+  "citizenUid": "STRING(32), UNIQUE, NOT NULL (FOREIGN KEY -> Citizen.uid)",
+  "categories": "JSON, NOT NULL (пример: ['B', 'C'])",
+  "penaltyPoints": "INTEGER, DEFAULT 0",
+  "issuedAt": "DATEONLY, NOT NULL",
+  "expiresAt": "DATEONLY, NOT NULL",
+  "suspendedUntil": "DATEONLY, ALLOW NULL",
+  "status": "ENUM('valid', 'suspended', 'revoked', 'expired'), DEFAULT 'valid'",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+21. TrafficFine.js (Штрафы за нарушения ПДД)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "fineNumber": "STRING(32), UNIQUE, NOT NULL",
+  "violatorUid": "STRING(32), NOT NULL (FOREIGN KEY -> Citizen.uid)",
+  "vehicleVin": "STRING(32), ALLOW NULL",
+  "articleCode": "STRING(64), NOT NULL",
+  "amount": "DECIMAL(12, 2), NOT NULL",
+  "pointsAdded": "INTEGER, DEFAULT 0",
+  "inspectorUid": "STRING(32), NOT NULL",
+  "status": "ENUM('unpaid', 'paid', 'overdue', 'cancelled'), DEFAULT 'unpaid'",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+22. TrafficAccident.js (Карточки ДТП)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "accidentNumber": "STRING(32), UNIQUE, NOT NULL",
+  "location": "STRING(255), NOT NULL",
+  "participants": "JSON, NOT NULL (массив объектов {uid, vin, isGuilty})",
+  "description": "TEXT, NOT NULL",
+  "schemeUrl": "STRING(512), ALLOW NULL",
+  "inspectorUid": "STRING(32), NOT NULL",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+23. VehicleImpound.js (Штрафстоянка и эвакуация ТС)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "vehicleVin": "STRING(32), NOT NULL (FOREIGN KEY -> Vehicle.vin)",
+  "reason": "TEXT, NOT NULL",
+  "impoundLot": "STRING(128), NOT NULL",
+  "inspectorUid": "STRING(32), NOT NULL",
+  "releaseFee": "DECIMAL(12, 2), DEFAULT 0.00",
+  "status": "ENUM('impounded', 'released'), DEFAULT 'impounded'",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+--------------------------------------------------------------------------------
+РАЗДЕЛ 4. ОХРАНА И ЛИЦЕНЗИРОВАНИЕ ОРУЖИЯ (models/guard/)
+--------------------------------------------------------------------------------
+
+24. GuardedObject.js (Объекты под пультовой и физической охраной)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "objectCode": "STRING(32), UNIQUE, NOT NULL",
+  "ownerType": "ENUM('citizen', 'company', 'state'), NOT NULL",
+  "ownerId": "STRING(32), NOT NULL",
+  "name": "STRING(128), NOT NULL",
+  "address": "STRING(255), NOT NULL",
+  "alarmStatus": "ENUM('disarmed', 'armed', 'alarm_triggered'), DEFAULT 'armed'",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+25. AlarmIncident.js (Выезды ГБР по сработке сигнализации)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "objectId": "INTEGER, NOT NULL (FOREIGN KEY -> GuardedObject.id)",
+  "triggeredAt": "DATE, NOT NULL",
+  "squadName": "STRING(64), ALLOW NULL",
+  "result": "ENUM('false_alarm', 'intruder_detained', 'property_damaged'), ALLOW NULL",
+  "reportText": "TEXT, ALLOW NULL",
+  "status": "ENUM('active', 'resolved'), DEFAULT 'active'",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+26. WeaponLicense.js (Лицензии граждан на оружие)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "licenseNumber": "STRING(32), UNIQUE, NOT NULL",
+  "citizenUid": "STRING(32), NOT NULL (FOREIGN KEY -> Citizen.uid)",
+  "category": "ENUM('civil_self_defense', 'hunting', 'service_guard'), NOT NULL",
+  "issuedByUid": "STRING(32), NOT NULL",
+  "expiresAt": "DATEONLY, NOT NULL",
+  "status": "ENUM('active', 'suspended', 'revoked'), DEFAULT 'active'",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+27. WeaponRegistry.js (Реестр зарегистрированных стволов и пулегильзотека)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "serialNumber": "STRING(64), UNIQUE, NOT NULL",
+  "modelName": "STRING(128), NOT NULL",
+  "caliber": "STRING(32), NOT NULL",
+  "ownerType": "ENUM('citizen', 'company', 'department'), NOT NULL",
+  "ownerId": "STRING(32), NOT NULL",
+  "ballisticCode": "STRING(128), UNIQUE, NOT NULL",
+  "status": "ENUM('registered', 'stolen', 'seized', 'destroyed'), DEFAULT 'registered'",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+28. SecurityPass.js (Пропуска СКУД на режимные объекты)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "passCode": "STRING(32), UNIQUE, NOT NULL",
+  "citizenUid": "STRING(32), NOT NULL (FOREIGN KEY -> Citizen.uid)",
+  "facilityName": "STRING(128), NOT NULL",
+  "accessZone": "STRING(64), NOT NULL",
+  "issuedByUid": "STRING(32), NOT NULL",
+  "validUntil": "DATE, NOT NULL",
+  "status": "ENUM('active', 'revoked', 'expired'), DEFAULT 'active'",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+--------------------------------------------------------------------------------
+РАЗДЕЛ 5. ПОГРАНИЧНАЯ СЛУЖБА И ТАМОЖНЯ (models/border/)
+--------------------------------------------------------------------------------
+
+29. BorderCrossing.js (Журнал пересечения государственной границы)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "citizenUid": "STRING(32), NOT NULL (FOREIGN KEY -> Citizen.uid)",
+  "citizenPid": "STRING(32), NOT NULL",
+  "checkpointName": "STRING(128), NOT NULL",
+  "direction": "ENUM('entry', 'exit'), NOT NULL",
+  "transportType": "ENUM('foot', 'car', 'air', 'sea', 'rail'), NOT NULL",
+  "vehicleVin": "STRING(32), ALLOW NULL",
+  "officerUid": "STRING(32), NOT NULL",
+  "decision": "ENUM('allowed', 'denied', 'detained'), NOT NULL",
+  "denyReason": "STRING(255), ALLOW NULL",
+  "createdAt": "DATE"
+}
+
+30. BorderBan.js (Стоп-лист: запрет на въезд и выезд)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "citizenUid": "STRING(32), NOT NULL (FOREIGN KEY -> Citizen.uid)",
+  "banType": "ENUM('exit_ban', 'entry_ban', 'full_ban'), NOT NULL",
+  "initiatorDept": "ENUM('border', 'militia', 'court', 'kgb', 'inspection'), NOT NULL",
+  "reason": "TEXT, NOT NULL",
+  "expiresAt": "DATE, ALLOW NULL",
+  "status": "ENUM('active', 'lifted'), DEFAULT 'active'",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+31. MigrationPermit.js (Визы, РВП и Вид на жительство)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "permitNumber": "STRING(32), UNIQUE, NOT NULL",
+  "citizenUid": "STRING(32), NOT NULL (FOREIGN KEY -> Citizen.uid)",
+  "type": "ENUM('visa', 'rvp', 'vnj'), NOT NULL",
+  "issuedAt": "DATEONLY, NOT NULL",
+  "expiresAt": "DATEONLY, NOT NULL",
+  "status": "ENUM('active', 'expired', 'annulled'), DEFAULT 'active'",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+32. CustomsDeclaration.js (Таможенные декларации грузов компаний)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "declarationNumber": "STRING(32), UNIQUE, NOT NULL",
+  "companyCid": "STRING(32), NOT NULL (FOREIGN KEY -> Company.cid)",
+  "cargoDescription": "TEXT, NOT NULL",
+  "declaredValue": "DECIMAL(15, 2), NOT NULL",
+  "customsDuty": "DECIMAL(15, 2), NOT NULL",
+  "inspectorUid": "STRING(32), ALLOW NULL",
+  "status": "ENUM('submitted', 'cleared', 'seized_contraband'), DEFAULT 'submitted'",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+--------------------------------------------------------------------------------
+РАЗДЕЛ 6. СУД / СУДЕБНАЯ СИСТЕМА (models/court/)
+--------------------------------------------------------------------------------
+
+33. CourtCase.js (Судебные дела всех инстанций)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "docketNumber": "STRING(32), UNIQUE, NOT NULL",
+  "chamber": "ENUM('criminal', 'administrative', 'arbitration', 'appeal'), NOT NULL",
+  "plaintiffId": "STRING(32), NOT NULL (UID, CID или код ведомства)",
+  "defendantId": "STRING(32), NOT NULL (UID или CID)",
+  "judgeUid": "STRING(32), ALLOW NULL",
+  "hearingDate": "DATE, ALLOW NULL",
+  "materials": "TEXT, NOT NULL",
+  "status": "ENUM('filed', 'scheduled', 'in_hearing', 'verdict_issued', 'appealed'), DEFAULT 'filed'",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+34. CourtWarrant.js (Судебные ордера и санкции)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "warrantNumber": "STRING(32), UNIQUE, NOT NULL",
+  "type": "ENUM('arrest', 'search', 'wiretap', 'asset_freeze', 'travel_ban'), NOT NULL",
+  "targetType": "ENUM('citizen', 'company', 'vehicle'), NOT NULL",
+  "targetId": "STRING(32), NOT NULL",
+  "requestedByDept": "ENUM('militia', 'kgb', 'inspection'), NOT NULL",
+  "requestedByUid": "STRING(32), NOT NULL",
+  "judgeUid": "STRING(32), ALLOW NULL",
+  "grounds": "TEXT, NOT NULL",
+  "status": "ENUM('pending', 'approved', 'rejected', 'executed', 'expired'), DEFAULT 'pending'",
+  "validUntil": "DATE, ALLOW NULL",
+  "digitalSignature": "STRING(255), ALLOW NULL",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+35. CourtVerdict.js (Приговоры, решения и исполнительные листы)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "courtCaseId": "INTEGER, NOT NULL (FOREIGN KEY -> CourtCase.id)",
+  "judgeUid": "STRING(32), NOT NULL",
+  "verdictType": "ENUM('guilty', 'acquitted', 'fine_ordered', 'company_liquidated', 'satisfied'), NOT NULL",
+  "prisonTermMonths": "INTEGER, DEFAULT 0",
+  "fineAmount": "DECIMAL(15, 2), DEFAULT 0.00",
+  "additionalSanctions": "JSON, DEFAULT [] (пример: ['revoke_driver_license', 'travel_ban'])",
+  "resolutionText": "TEXT, NOT NULL",
+  "isExecuted": "BOOLEAN, DEFAULT false",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+--------------------------------------------------------------------------------
+РАЗДЕЛ 7. ИНСПЕКЦИОННОЕ МИНИСТЕРСТВО (models/inspection/)
+--------------------------------------------------------------------------------
+
+36. BusinessLicense.js (Государственные лицензии компаний)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "licenseNumber": "STRING(32), UNIQUE, NOT NULL",
+  "companyCid": "STRING(32), NOT NULL (FOREIGN KEY -> Company.cid)",
+  "activityScope": "STRING(128), NOT NULL",
+  "issuedByUid": "STRING(32), NOT NULL",
+  "expiresAt": "DATEONLY, NOT NULL",
+  "status": "ENUM('active', 'suspended', 'revoked'), DEFAULT 'active'",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+37. InspectionCheck.js (Плановые и внеплановые проверки организаций)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "checkNumber": "STRING(32), UNIQUE, NOT NULL",
+  "companyCid": "STRING(32), NOT NULL (FOREIGN KEY -> Company.cid)",
+  "inspectionType": "ENUM('tax', 'fire_safety', 'sanitary', 'labor', 'comprehensive'), NOT NULL",
+  "inspectorUid": "STRING(32), NOT NULL",
+  "findings": "TEXT, ALLOW NULL",
+  "violationsCount": "INTEGER, DEFAULT 0",
+  "status": "ENUM('scheduled', 'in_progress', 'passed', 'violations_found'), DEFAULT 'scheduled'",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+38. InspectionPrescription.js (Предписания и штрафы бизнесу)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "checkId": "INTEGER, NOT NULL (FOREIGN KEY -> InspectionCheck.id)",
+  "companyCid": "STRING(32), NOT NULL (FOREIGN KEY -> Company.cid)",
+  "requirementText": "TEXT, NOT NULL",
+  "fineAmount": "DECIMAL(15, 2), DEFAULT 0.00",
+  "deadline": "DATE, NOT NULL",
+  "status": "ENUM('active', 'fulfilled', 'overdue_escalated'), DEFAULT 'active'",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+39. StateTender.js (Государственные закупки и тендеры)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "tenderNumber": "STRING(32), UNIQUE, NOT NULL",
+  "customerDept": "STRING(32), NOT NULL",
+  "title": "STRING(255), NOT NULL",
+  "description": "TEXT, NOT NULL",
+  "budget": "DECIMAL(15, 2), NOT NULL",
+  "winnerCid": "STRING(32), ALLOW NULL",
+  "status": "ENUM('open', 'awarded', 'completed', 'cancelled'), DEFAULT 'open'",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+--------------------------------------------------------------------------------
+РАЗДЕЛ 8. КГБ / ГОСУДАРСТВЕННАЯ БЕЗОПАСНОСТЬ (models/kgb/)
+--------------------------------------------------------------------------------
+
+40. ClassifiedFile.js (Секретные досье с шифрованием AES-256-GCM)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "fileCode": "STRING(32), UNIQUE, NOT NULL",
+  "secrecyLevel": "ENUM('dsp', 'secret', 'top_secret', 'special_importance'), NOT NULL",
+  "targetType": "ENUM('citizen', 'company', 'officer', 'event'), NOT NULL",
+  "targetId": "STRING(32), NOT NULL",
+  "title": "STRING(255), NOT NULL",
+  "encryptedPayload": "TEXT, NOT NULL",
+  "iv": "STRING(64), NOT NULL",
+  "authTag": "STRING(64), NOT NULL",
+  "curatorUid": "STRING(32), NOT NULL",
+  "status": "ENUM('active', 'archived'), DEFAULT 'active'",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+41. SurveillanceTarget.js (Оперативная разработка и ОРМ)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "targetType": "ENUM('citizen', 'company', 'officer'), NOT NULL",
+  "targetId": "STRING(32), NOT NULL",
+  "measures": "JSON, NOT NULL (пример: ['wiretap', 'financial_monitor', 'border_alert'])",
+  "warrantNumber": "STRING(32), ALLOW NULL",
+  "curatorUid": "STRING(32), NOT NULL",
+  "status": "ENUM('active', 'suspended', 'closed'), DEFAULT 'active'",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
+
+42. SecurityClearance.js (Спецпроверки и допуски госслужащих к гостайне)
+{
+  "id": "INTEGER, PRIMARY KEY, AUTO_INCREMENT",
+  "officerUid": "STRING(32), UNIQUE, NOT NULL (FOREIGN KEY -> Citizen.uid)",
+  "clearanceForm": "ENUM('none', 'form_3_dsp', 'form_2_secret', 'form_1_top_secret'), DEFAULT 'none'",
+  "vettingStatus": "ENUM('pending', 'approved', 'denied', 'revoked'), DEFAULT 'pending'",
+  "checkedByKgbUid": "STRING(32), ALLOW NULL",
+  "notes": "TEXT, ALLOW NULL",
+  "createdAt": "DATE",
+  "updatedAt": "DATE"
+}
