@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Инспекционное министерство — Единая рабочая панель</title>
+    <link rel="stylesheet" href="/police-cms/css/general/general.css" />
+    <link
+      rel="stylesheet"
+      href="/police-cms/css/InspectionMinistry/InspectionMinistry.css"
+    />
+  </head>
+  <body>
+    <main class="container">
+      <div class="work-topbar">
+        <div>
+          <h1 style="font-size: 22px; font-weight: 800">
+            Инспекционное министерство — Рабочая панель
+          </h1>
+          <span id="officer-info" style="font-size: 13px; color: #94a3b8"
+            >Проверка допуска...</span
+          >
+        </div>
+        <a href="/police-cms/dept/InspectionMinistry" class="btn btn-primary"
+          >← На портал министерства</a
+        >
+      </div>
+
+      <div class="tabs-bar">
+        <button
+          type="button"
+          class="btn btn-primary tab-btn"
+          data-tab="t-reg-citizen"
+          data-spec="company_registrar"
+        >
+          Регистрация человека
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn"
+          data-tab="t-reg-company"
+          data-spec="company_registrar"
+        >
+          Регистрация компании
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn"
+          data-tab="t-review-comp"
+          data-spec="company_registrar"
+        >
+          Заявки юрлиц
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn"
+          data-tab="t-check"
+          data-spec="field_inspector"
+        >
+          Проверка бизнеса
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-outline tab-btn chief-only hidden"
+          data-tab="t-chief-staff"
+        >
+          Штат и допуски
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn chief-only hidden"
+          data-tab="t-chief-stats"
+        >
+          Статистика и сбор
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn chief-only hidden"
+          data-tab="t-chief-news"
+        >
+          Новости и портал
+        </button>
+      </div>
+
+      <!-- === 1. РЕГИСТРАЦИЯ ЧЕЛОВЕКА (ФИЗЛИЦА) === -->
+      <section id="t-reg-citizen" class="panel-card tab-section">
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Регистрация нового гражданина (Выдача UID и PID)
+        </h2>
+        <form data-endpoint="/auth/register/citizen">
+          <div class="field-group">
+            <label>Пароль регистратора</label
+            ><input type="password" name="registrarPassword" required />
+          </div>
+          <div class="field-group">
+            <label>Фамилия</label><input type="text" name="lastName" required />
+          </div>
+          <div class="field-group">
+            <label>Имя</label><input type="text" name="firstName" required />
+          </div>
+          <div class="field-group">
+            <label>Отчество</label><input type="text" name="middleName" />
+          </div>
+          <div class="field-group">
+            <label>Номер телефона</label
+            ><input type="tel" name="phone" required />
+          </div>
+          <div class="field-group">
+            <label>Электронная почта</label
+            ><input type="email" name="email" required />
+          </div>
+          <div class="field-group">
+            <label>Дата рождения</label
+            ><input type="date" name="birthDate" required />
+          </div>
+          <div class="field-group">
+            <label
+              >Пароль для входа гражданина (если пусто — паролем станет
+              PID)</label
+            ><input type="password" name="password" />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Зарегистрировать гражданина
+          </button>
+        </form>
+      </section>
+
+      <!-- === 2. РЕГИСТРАЦИЯ КОМПАНИИ (ЮРЛИЦА) === -->
+      <section id="t-reg-company" class="panel-card tab-section hidden">
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Регистрация юридического лица (Выдача CID)
+        </h2>
+        <form data-endpoint="/auth/register/company">
+          <div class="field-group">
+            <label>UID учредителя</label
+            ><input
+              type="text"
+              name="ownerUid"
+              placeholder="UID-123456"
+              required
+            />
+          </div>
+          <div class="field-group">
+            <label>PID паспорта учредителя</label
+            ><input
+              type="text"
+              name="ownerPid"
+              placeholder="AB-1234567"
+              required
+            />
+          </div>
+          <div class="field-group">
+            <label>Название компании</label
+            ><input type="text" name="companyName" required />
+          </div>
+          <div class="field-group">
+            <label>Телефон организации</label
+            ><input type="tel" name="phone" required />
+          </div>
+          <div class="field-group">
+            <label>Email организации</label
+            ><input type="email" name="email" required />
+          </div>
+          <div class="field-group">
+            <label>Стартовый капитал</label
+            ><input
+              type="number"
+              name="initialCapital"
+              min="0"
+              step="0.01"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Оформить компанию
+          </button>
+        </form>
+      </section>
+
+      <!-- === 3. РАССМОТРЕНИЕ И ОДОБРЕНИЕ ЗАЯВОК КОМПАНИЙ === -->
+      <section id="t-review-comp" class="panel-card tab-section hidden">
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            gap: 10px;
+          "
+        >
+          <h2 style="font-size: 18px">Утверждение регистрации компании</h2>
+          <button
+            type="button"
+            id="load-pending-companies-btn"
+            class="btn btn-outline"
+          >
+            Показать список ожидающих заявок
+          </button>
+        </div>
+        <form data-endpoint="/inspection/companies/:cid/review">
+          <div class="field-group">
+            <label>CID компании</label
+            ><input type="text" name="cid" placeholder="CID-123456" required />
+          </div>
+          <div class="field-group">
+            <label>Решение инспектора</label>
+            <select name="decision">
+              <option value="approved">Одобрить регистрацию</option>
+              <option value="rejected">Отклонить заявку</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Сфера деятельности</label
+            ><input
+              type="text"
+              name="activityType"
+              placeholder="Торговля / Перевозки / Охрана"
+            />
+          </div>
+          <div class="field-group">
+            <label>Комментарий к решению</label
+            ><textarea name="reviewComment" rows="2"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Подтвердить решение
+          </button>
+        </form>
+      </section>
+
+      <!-- === 4. ПРОВЕРКА БИЗНЕСА === -->
+      <section id="t-check" class="panel-card tab-section hidden">
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Фиксация государственной проверки компании
+        </h2>
+        <form data-endpoint="/inspection/checks">
+          <div class="field-group">
+            <label>CID проверяемой компании</label
+            ><input
+              type="text"
+              name="companyCid"
+              placeholder="CID-123456"
+              required
+            />
+          </div>
+          <div class="field-group">
+            <label>Тип проверки</label>
+            <select name="inspectionType">
+              <option value="tax">Налоговая проверка</option>
+              <option value="fire">Пожарный надзор</option>
+              <option value="sanitary">Санитарная инспекция</option>
+              <option value="labor">Трудовая инспекция</option>
+              <option value="comprehensive">Комплексная проверка</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Итог проверки</label>
+            <select name="status">
+              <option value="passed">Нарушений не выявлено</option>
+              <option value="violations_found">Выявлены нарушения</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Сумма штрафа (если есть нарушения)</label
+            ><input
+              type="number"
+              name="fineAmount"
+              value="0"
+              min="0"
+              step="0.01"
+            />
+          </div>
+          <div class="field-group">
+            <label>Акт проверки (выявленные факты)</label
+            ><textarea name="findings" rows="3" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Записать акт проверки
+          </button>
+        </form>
+      </section>
+
+      <!-- === ИНСТРУМЕНТЫ НАЧАЛЬНИКА И КГБ === -->
+      <section
+        id="t-chief-staff"
+        class="panel-card tab-section chief-only hidden"
+      >
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Приём инспектора и выдача совмещаемых допусков
+        </h2>
+        <form id="chief-hire-form" style="margin-bottom: 24px">
+          <div class="field-group">
+            <label>UID гражданина</label
+            ><input
+              type="text"
+              name="targetUid"
+              placeholder="UID-123456"
+              required
+            />
+          </div>
+          <div class="field-group">
+            <label>Звание / Должность</label
+            ><input type="text" name="rankTitle" value="Инспектор" required />
+          </div>
+          <div class="field-group">
+            <label>Допуски (можно выбрать несколько одновременно):</label>
+            <div
+              id="hire-specs-list"
+              style="
+                padding: 12px;
+                background: #f8fafc;
+                border-radius: 7px;
+                border: 1px solid var(--border);
+              "
+            ></div>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Зачислить в штат министерства
+          </button>
+        </form>
+
+        <h3 style="font-size: 17px; margin-bottom: 12px">
+          Личный состав Инспекционного министерства
+        </h3>
+        <div id="chief-staff-list"></div>
+      </section>
+
+      <section
+        id="t-chief-stats"
+        class="panel-card tab-section chief-only hidden"
+      >
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 10px;
+          "
+        >
+          <h2 style="font-size: 18px">
+            Статистика Инспекционного министерства
+          </h2>
+          <button
+            type="button"
+            id="chief-call-duty-btn"
+            class="btn btn-primary"
+          >
+            📢 Вызвать состав на работу
+          </button>
+        </div>
+        <div
+          id="chief-stats-box"
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+          "
+        ></div>
+      </section>
+
+      <section
+        id="t-chief-news"
+        class="panel-card tab-section chief-only hidden"
+      >
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Публикация сводки министерства в общую ленту
+        </h2>
+        <form id="chief-news-form" style="margin-bottom: 24px">
+          <div class="field-group">
+            <label>Заголовок</label><input type="text" name="title" required />
+          </div>
+          <div class="field-group">
+            <label>Текст новости</label
+            ><textarea name="content" rows="3" required></textarea>
+          </div>
+          <div class="field-group">
+            <label>Фото URL (не обязательно)</label
+            ><input type="url" name="photoUrl" />
+          </div>
+          <button type="submit" class="btn btn-primary">Опубликовать</button>
+        </form>
+
+        <h3 style="font-size: 17px; margin-bottom: 12px">
+          Настройки портала министерства (home.html)
+        </h3>
+        <form id="chief-portal-form">
+          <div class="field-group">
+            <label>Описание ведомства</label
+            ><textarea name="aboutText" rows="2"></textarea>
+          </div>
+          <div class="field-group">
+            <label>Telegram</label><input type="url" name="telegram" />
+          </div>
+          <div class="field-group">
+            <label> Discord</label><input type="url" name="discord" />
+          </div>
+          <div class="field-group">
+            <label>Форум / Устав</label>
+            <input type="url" name="forum" />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Сохранить настройки
+          </button>
+        </form>
+      </section>
+
+      <div id="result-box" class="hidden"></div>
+    </main>
+
+    <footer class="site-footer">
+      © 2026 POLICE-CMS — Государственная система управления реестрами
+    </footer>
+
+    <script src="/police-cms/js/general/dept-work.js"></script>
+    <script src="/police-cms/js/InspectionMinistry/work.js"></script>
+  </body>
+</html>

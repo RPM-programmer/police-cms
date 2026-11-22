@@ -1,5 +1,5 @@
 const crypto = require("crypto");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs"); // вместо require('bcrypt')
 
 class CryptoHelper {
   static randomDigits(length = 6) {

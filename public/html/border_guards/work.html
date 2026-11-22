@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Пограничная служба — Единая рабочая панель</title>
+    <link rel="stylesheet" href="/police-cms/css/general/general.css" />
+    <link
+      rel="stylesheet"
+      href="/police-cms/css/border_guards/border_guards.css"
+    />
+  </head>
+  <body>
+    <main class="container">
+      <div class="work-topbar">
+        <div>
+          <h1 style="font-size: 22px; font-weight: 800">
+            Пограничная служба — Единая рабочая панель
+          </h1>
+          <span id="officer-info" style="font-size: 13px; color: #94a3b8"
+            >Проверка допуска...</span
+          >
+        </div>
+        <a href="/police-cms/dept/border_guards" class="btn btn-primary"
+          >← На портал службы</a
+        >
+      </div>
+
+      <div class="tabs-bar">
+        <button
+          type="button"
+          class="btn btn-primary tab-btn"
+          data-tab="t-kpp"
+          data-spec="kpp_controller"
+        >
+          Контроль на КПП
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn"
+          data-tab="t-ban"
+          data-spec="migration_officer"
+        >
+          Стоп-лист (Запрет)
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn"
+          data-tab="t-visa"
+          data-spec="migration_officer"
+        >
+          Визы / ВНЖ / Пропуска
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-outline tab-btn chief-only hidden"
+          data-tab="t-chief-staff"
+        >
+          Штат и допуски
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn chief-only hidden"
+          data-tab="t-chief-stats"
+        >
+          Статистика и сбор
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn chief-only hidden"
+          data-tab="t-chief-news"
+        >
+          Новости и портал
+        </button>
+      </div>
+
+      <!-- === ИНСТРУМЕНТЫ СОТРУДНИКОВ === -->
+      <section id="t-kpp" class="panel-card tab-section">
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Пограничный контроль и сканирование по государственным базам
+        </h2>
+        <form data-endpoint="/border/crossing">
+          <div class="field-group">
+            <label>UID гражданина (или укажите PID ниже)</label
+            ><input type="text" name="citizenUid" placeholder="UID-123456" />
+          </div>
+          <div class="field-group">
+            <label>PID паспорта</label
+            ><input type="text" name="citizenPid" placeholder="AB-1234567" />
+          </div>
+          <div class="field-group">
+            <label>Пункт пропуска (КПП)</label
+            ><input
+              type="text"
+              name="checkpoint"
+              placeholder="КПП-1 Центральный"
+              required
+            />
+          </div>
+          <div class="field-group">
+            <label>Направление</label>
+            <select name="direction">
+              <option value="entry">Въезд в страну</option>
+              <option value="exit">Выезд из страны</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Госномер ТС (если пересекает на транспорте)</label
+            ><input type="text" name="vehiclePlate" />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Проверить по базам и зафиксировать
+          </button>
+        </form>
+      </section>
+
+      <section id="t-ban" class="panel-card tab-section hidden">
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Внесение гражданина в пограничный стоп-лист
+        </h2>
+        <form data-endpoint="/border/bans">
+          <div class="field-group">
+            <label>UID гражданина</label
+            ><input
+              type="text"
+              name="targetUid"
+              placeholder="UID-123456"
+              required
+            />
+          </div>
+          <div class="field-group">
+            <label>Тип ограничения</label>
+            <select name="banType">
+              <option value="exit_ban">Запрет на выезд</option>
+              <option value="entry_ban">Запрет на въезд</option>
+              <option value="full_block">Полная блокировка пересечения</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Основание / причина</label
+            ><textarea name="reason" rows="3" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Установить запрет
+          </button>
+        </form>
+      </section>
+
+      <section id="t-visa" class="panel-card tab-section hidden">
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Выдача миграционных разрешений и пропусков
+        </h2>
+        <form data-endpoint="/border/permits">
+          <div class="field-group">
+            <label>UID гражданина</label
+            ><input
+              type="text"
+              name="citizenUid"
+              placeholder="UID-123456"
+              required
+            />
+          </div>
+          <div class="field-group">
+            <label>Тип документа</label>
+            <select name="type">
+              <option value="visa">Въездная виза</option>
+              <option value="rvp">
+                Разрешение на временное проживание (РВП)
+              </option>
+              <option value="vnj">Вид на жительство (ВНЖ)</option>
+              <option value="border_zone_pass">
+                Пропуск в пограничную зону
+              </option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Срок действия до</label
+            ><input type="date" name="validUntil" required />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Оформить разрешение
+          </button>
+        </form>
+      </section>
+
+      <!-- === ИНСТРУМЕНТЫ НАЧАЛЬНИКА ПОГРАНСЛУЖБЫ И КГБ === -->
+      <section
+        id="t-chief-staff"
+        class="panel-card tab-section chief-only hidden"
+      >
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Приём сотрудника и выдача совмещаемых допусков
+        </h2>
+        <form id="chief-hire-form" style="margin-bottom: 24px">
+          <div class="field-group">
+            <label>UID гражданина</label
+            ><input
+              type="text"
+              name="targetUid"
+              placeholder="UID-123456"
+              required
+            />
+          </div>
+          <div class="field-group">
+            <label>Звание / Должность</label
+            ><input type="text" name="rankTitle" value="Рядовой" required />
+          </div>
+          <div class="field-group">
+            <label>Допуски (можно выбрать несколько одновременно):</label>
+            <div
+              id="hire-specs-list"
+              style="
+                padding: 12px;
+                background: #f8fafc;
+                border-radius: 7px;
+                border: 1px solid var(--border);
+              "
+            ></div>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Зачислить в штат Погранслужбы
+          </button>
+        </form>
+
+        <h3 style="font-size: 17px; margin-bottom: 12px">
+          Личный состав Пограничной службы
+        </h3>
+        <div id="chief-staff-list"></div>
+      </section>
+
+      <section
+        id="t-chief-stats"
+        class="panel-card tab-section chief-only hidden"
+      >
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 10px;
+          "
+        >
+          <h2 style="font-size: 18px">Статистика Пограничной службы</h2>
+          <button
+            type="button"
+            id="chief-call-duty-btn"
+            class="btn btn-primary"
+          >
+            📢 Вызвать состав на работу
+          </button>
+        </div>
+        <div
+          id="chief-stats-box"
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+          "
+        ></div>
+      </section>
+
+      <section
+        id="t-chief-news"
+        class="panel-card tab-section chief-only hidden"
+      >
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Публикация сводки Погранслужбы в общую ленту
+        </h2>
+        <form id="chief-news-form" style="margin-bottom: 24px">
+          <div class="field-group">
+            <label>Заголовок</label><input type="text" name="title" required />
+          </div>
+          <div class="field-group">
+            <label>Текст новости</label
+            ><textarea name="content" rows="3" required></textarea>
+          </div>
+          <div class="field-group">
+            <label>Фото URL (не обязательно)</label
+            ><input type="url" name="photoUrl" />
+          </div>
+          <button type="submit" class="btn btn-primary">Опубликовать</button>
+        </form>
+
+        <h3 style="font-size: 17px; margin-bottom: 12px">
+          Настройки портала Погранслужбы (home.html)
+        </h3>
+        <form id="chief-portal-form">
+          <div class="field-group">
+            <label>Описание ведомства</label
+            ><textarea name="aboutText" rows="2"></textarea>
+          </div>
+          <div class="field-group">
+            <label>Telegram</label><input type="url" name="telegram" />
+          </div>
+          <div class="field-group">
+            <label>Discord</label><input type="url" name="discord" />
+          </div>
+          <div class="field-group">
+            <label>Форум / Устав</label><input type="url" name="forum" />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Сохранить настройки
+          </button>
+        </form>
+      </section>
+
+      <div id="result-box" class="hidden"></div>
+    </main>
+
+    <footer class="site-footer">
+      © 2026 POLICE-CMS — Государственная система управления реестрами
+    </footer>
+
+    <script src="/police-cms/js/general/dept-work.js"></script>
+    <script src="/police-cms/js/border_guards/work.js"></script>
+  </body>
+</html>

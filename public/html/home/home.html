@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>POLICE-CMS — Официальные новости и сводки</title>
+    <link rel="stylesheet" href="/police-cms/css/general/general.css" />
+    <link rel="stylesheet" href="/police-cms/css/home/news.css" />
+  </head>
+  <body>
+    <header class="top-navbar" id="app-navbar"></header>
+
+    <main class="container">
+      <div class="page-top">
+        <div>
+          <h1>Официальная лента сводок</h1>
+          <p style="color: var(--text-muted); font-size: 14px">
+            Оперативные сообщения и приказы государственных служб
+          </p>
+        </div>
+      </div>
+
+      <!-- Фильтр новостей по ведомствам -->
+      <div class="filter-bar" id="news-filters">
+        <button type="button" class="filter-chip active" data-dept="">
+          Все службы
+        </button>
+      </div>
+
+      <!-- Лента новостей -->
+      <section id="news-feed">
+        <div class="panel-card">Загрузка ленты новостей...</div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      © 2026 POLICE-CMS — Государственная система управления реестрами
+    </footer>
+
+    <script src="/police-cms/js/general/navbar.js"></script>
+    <script src="/police-cms/js/home/news.js"></script>
+    <script src="/police-cms/js/home/home.js"></script>
+  </body>
+</html>

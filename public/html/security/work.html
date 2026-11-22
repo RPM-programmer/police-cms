@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Охрана — Единая рабочая панель</title>
+    <link rel="stylesheet" href="/police-cms/css/general/general.css" />
+    <link rel="stylesheet" href="/police-cms/css/security/security.css" />
+  </head>
+  <body>
+    <main class="container">
+      <div class="work-topbar">
+        <div>
+          <h1 style="font-size: 22px; font-weight: 800">
+            Департамент охраны — Единая рабочая панель
+          </h1>
+          <span id="officer-info" style="font-size: 13px; color: #94a3b8"
+            >Проверка допуска...</span
+          >
+        </div>
+        <a href="/police-cms/dept/security" class="btn btn-primary"
+          >← На портал Охраны</a
+        >
+      </div>
+
+      <div class="tabs-bar">
+        <button
+          type="button"
+          class="btn btn-primary tab-btn"
+          data-tab="t-obj"
+          data-spec="guard_objects"
+        >
+          Охрана объекта
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn"
+          data-tab="t-alarm"
+          data-spec="guard_objects"
+        >
+          Тревога / Выезд ГБР
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn"
+          data-tab="t-wlic"
+          data-spec="weapon_licensing"
+        >
+          Лицензия на оружие
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn"
+          data-tab="t-wreg"
+          data-spec="weapon_licensing"
+        >
+          Пулегильзотека (Ствол)
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-outline tab-btn chief-only hidden"
+          data-tab="t-chief-staff"
+        >
+          Штат и допуски
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn chief-only hidden"
+          data-tab="t-chief-stats"
+        >
+          Статистика и сбор
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn chief-only hidden"
+          data-tab="t-chief-news"
+        >
+          Новости и портал
+        </button>
+      </div>
+
+      <!-- === ИНСТРУМЕНТЫ СОТРУДНИКОВ === -->
+      <section id="t-obj" class="panel-card tab-section">
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Постановка объекта под пультовую охрану
+        </h2>
+        <form data-endpoint="/security/objects">
+          <div class="field-group">
+            <label>Название объекта</label
+            ><input type="text" name="name" required />
+          </div>
+          <div class="field-group">
+            <label>Адрес расположения</label
+            ><input type="text" name="address" required />
+          </div>
+          <div class="field-group">
+            <label>Тип владельца</label>
+            <select name="ownerType">
+              <option value="citizen">Гражданин (UID)</option>
+              <option value="company">Компания (CID)</option>
+              <option value="government">Государственный объект</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>UID / CID владельца или код ведомства</label
+            ><input type="text" name="ownerId" required />
+          </div>
+          <div class="field-group">
+            <label>Закреплённый экипаж ГБР</label
+            ><input type="text" name="assignedUnit" placeholder="ГБР-1" />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Поставить под охрану
+          </button>
+        </form>
+      </section>
+
+      <section id="t-alarm" class="panel-card tab-section hidden">
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Фиксация сработки сигнализации и выезд ГБР
+        </h2>
+        <form data-endpoint="/security/alarm">
+          <div class="field-group">
+            <label>Код охраняемого объекта (OBJ-...)</label
+            ><input type="text" name="objectCode" required />
+          </div>
+          <div class="field-group">
+            <label>Направленный экипаж ГБР</label
+            ><input type="text" name="crewName" placeholder="ГБР-1" required />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Зафиксировать выезд ГБР
+          </button>
+        </form>
+      </section>
+
+      <section id="t-wlic" class="panel-card tab-section hidden">
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Выдача лицензии на оружие (ЛРР)
+        </h2>
+        <form data-endpoint="/security/weapon-licenses">
+          <div class="field-group">
+            <label>Тип получателя</label>
+            <select name="holderType">
+              <option value="citizen">Гражданин (UID)</option>
+              <option value="company">ЧОП / Компания (CID)</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>UID гражданина или CID компании</label
+            ><input
+              type="text"
+              name="holderId"
+              placeholder="UID-123456"
+              required
+            />
+          </div>
+          <div class="field-group">
+            <label>Категория разрешения</label>
+            <select name="category">
+              <option value="civilian">Гражданское оружие</option>
+              <option value="service">Служебное оружие</option>
+              <option value="security_agency">Деятельность ЧОП</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Срок действия до</label
+            ><input type="date" name="expiresAt" required />
+          </div>
+          <button type="submit" class="btn btn-primary">Выдать лицензию</button>
+        </form>
+      </section>
+
+      <section id="t-wreg" class="panel-card tab-section hidden">
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Регистрация единицы оружия в пулегильзотеке
+        </h2>
+        <form data-endpoint="/security/weapons">
+          <div class="field-group">
+            <label>Серийный номер ствола</label
+            ><input type="text" name="serialNumber" required />
+          </div>
+          <div class="field-group">
+            <label>Модель оружия</label
+            ><input type="text" name="model" required />
+          </div>
+          <div class="field-group">
+            <label>Калибр</label
+            ><input type="text" name="caliber" placeholder="9x18 мм" required />
+          </div>
+          <div class="field-group">
+            <label>UID владельца</label
+            ><input type="text" name="ownerUid" required />
+          </div>
+          <div class="field-group">
+            <label>Номер действующей лицензии (WLIC-...)</label
+            ><input type="text" name="licenseNumber" required />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Зарегистрировать в пулегильзотеке
+          </button>
+        </form>
+      </section>
+
+      <!-- === ИНСТРУМЕНТЫ НАЧАЛЬНИКА ОХРАНЫ И КГБ === -->
+      <section
+        id="t-chief-staff"
+        class="panel-card tab-section chief-only hidden"
+      >
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Приём сотрудника и выдача совмещаемых допусков
+        </h2>
+        <form id="chief-hire-form" style="margin-bottom: 24px">
+          <div class="field-group">
+            <label>UID гражданина</label
+            ><input
+              type="text"
+              name="targetUid"
+              placeholder="UID-123456"
+              required
+            />
+          </div>
+          <div class="field-group">
+            <label>Звание / Должность</label
+            ><input type="text" name="rankTitle" value="Рядовой" required />
+          </div>
+          <div class="field-group">
+            <label>Допуски (можно выбрать несколько одновременно):</label>
+            <div
+              id="hire-specs-list"
+              style="
+                padding: 12px;
+                background: #f8fafc;
+                border-radius: 7px;
+                border: 1px solid var(--border);
+              "
+            ></div>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Зачислить в штат Охраны
+          </button>
+        </form>
+
+        <h3 style="font-size: 17px; margin-bottom: 12px">
+          Личный состав Департамента охраны
+        </h3>
+        <div id="chief-staff-list"></div>
+      </section>
+
+      <section
+        id="t-chief-stats"
+        class="panel-card tab-section chief-only hidden"
+      >
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 10px;
+          "
+        >
+          <h2 style="font-size: 18px">Статистика Департамента охраны</h2>
+          <button
+            type="button"
+            id="chief-call-duty-btn"
+            class="btn btn-primary"
+          >
+            📢 Вызвать состав на работу
+          </button>
+        </div>
+        <div
+          id="chief-stats-box"
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+          "
+        ></div>
+      </section>
+
+      <section
+        id="t-chief-news"
+        class="panel-card tab-section chief-only hidden"
+      >
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Публикация сводки Охраны в общую ленту
+        </h2>
+        <form id="chief-news-form" style="margin-bottom: 24px">
+          <div class="field-group">
+            <label>Заголовок</label><input type="text" name="title" required />
+          </div>
+          <div class="field-group">
+            <label>Текст новости</label
+            ><textarea name="content" rows="3" required></textarea>
+          </div>
+          <div class="field-group">
+            <label>Фото URL (не обязательно)</label
+            ><input type="url" name="photoUrl" />
+          </div>
+          <button type="submit" class="btn btn-primary">Опубликовать</button>
+        </form>
+
+        <h3 style="font-size: 17px; margin-bottom: 12px">
+          Настройки портала Охраны (home.html)
+        </h3>
+        <form id="chief-portal-form">
+          <div class="field-group">
+            <label>Описание ведомства</label
+            ><textarea name="aboutText" rows="2"></textarea>
+          </div>
+          <div class="field-group">
+            <label>Telegram</label><input type="url" name="telegram" />
+          </div>
+          <div class="field-group">
+            <label>Discord</label><input type="url" name="discord" />
+          </div>
+          <div class="field-group">
+            <label>Форум / Устав</label><input type="url" name="forum" />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Сохранить настройки
+          </button>
+        </form>
+      </section>
+
+      <div id="result-box" class="hidden"></div>
+    </main>
+
+    <footer class="site-footer">
+      © 2026 POLICE-CMS — Государственная система управления реестрами
+    </footer>
+
+    <script src="/police-cms/js/general/dept-work.js"></script>
+    <script src="/police-cms/js/security/work.js"></script>
+  </body>
+</html>

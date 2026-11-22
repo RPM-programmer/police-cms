@@ -4,7 +4,7 @@ const { Sequelize } = require("sequelize");
 
 async function initDatabase() {
   const storagePath =
-    process.env.POLICE_CMS_DB_STORAGE || path.join(process.cwd(), "data.bd");
+    process.env.POLICE_CMS_DB_STORAGE || path.join(process.cwd(), "data.db");
 
   const sequelize = new Sequelize({
     dialect: "sqlite",

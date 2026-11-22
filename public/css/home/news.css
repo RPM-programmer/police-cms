@@ -1,0 +1,121 @@
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+
+.filter-chip {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.filter-chip.active,
+.filter-chip:hover {
+  background: var(--bg-nav);
+  color: #ffffff;
+  border-color: var(--bg-nav);
+}
+
+.news-card {
+  display: flex;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 18px;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+}
+
+.news-card.emergency {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.15);
+}
+
+.news-stripe {
+  width: 10px;
+  flex-shrink: 0;
+  background: var(--stripe, #334155);
+}
+
+.news-card[data-dept="traffic_police"] {
+  --stripe: var(--dept-traffic_police);
+}
+.news-card[data-dept="police"] {
+  --stripe: var(--dept-police);
+}
+.news-card[data-dept="security"] {
+  --stripe: var(--dept-security);
+}
+.news-card[data-dept="border_guards"] {
+  --stripe: var(--dept-border_guards);
+}
+.news-card[data-dept="InspectionMinistry"] {
+  --stripe: var(--dept-InspectionMinistry);
+}
+.news-card[data-dept="court"] {
+  --stripe: var(--dept-court);
+}
+.news-card[data-dept="KGB"] {
+  --stripe: var(--dept-KGB);
+}
+
+.news-body {
+  padding: 20px 24px;
+  flex: 1;
+}
+
+.news-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.dept-tag {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: #e2e8f0;
+  color: #0f172a;
+  padding: 3px 10px;
+  border-radius: 5px;
+}
+
+.news-time {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.news-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.news-content {
+  color: #334155;
+  white-space: pre-line;
+}
+
+.news-media {
+  margin-top: 14px;
+}
+
+.news-media img {
+  max-width: 100%;
+  max-height: 380px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+}

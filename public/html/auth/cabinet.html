@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Личный кабинет — POLICE-CMS</title>
+    <link rel="stylesheet" href="/police-cms/css/general/general.css" />
+    <link rel="stylesheet" href="/police-cms/css/auth/auth.css" />
+  </head>
+  <body>
+    <main class="auth-wrapper">
+      <div class="auth-topbar">
+        <div style="display: flex; align-items: center; gap: 12px">
+          <a href="/police-cms" class="btn btn-outline">← На главную</a>
+          <h1 style="font-size: 22px; font-weight: 800">
+            Личный кабинет гражданина
+          </h1>
+        </div>
+        <div style="display: flex; gap: 10px">
+          <div id="officer-action"></div>
+          <button type="button" id="cabinet-logout-btn" class="btn btn-danger">
+            Выйти
+          </button>
+        </div>
+      </div>
+
+      <section class="panel-card" id="passport-box">
+        Загрузка данных паспорта...
+      </section>
+      <section class="panel-card" id="status-box"></section>
+      <section class="panel-card" id="companies-box"></section>
+    </main>
+
+    <footer class="site-footer">
+      © 2026 POLICE-CMS — Государственная система управления реестрами
+    </footer>
+
+    <script src="/police-cms/js/auth/cabinet.js"></script>
+  </body>
+</html>

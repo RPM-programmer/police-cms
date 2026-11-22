@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Суд — Единая рабочая панель</title>
+    <link rel="stylesheet" href="/police-cms/css/general/general.css" />
+    <link rel="stylesheet" href="/police-cms/css/court/court.css" />
+  </head>
+  <body>
+    <main class="container">
+      <div class="work-topbar">
+        <div>
+          <h1 style="font-size: 22px; font-weight: 800">
+            Судебная система — Единая рабочая панель
+          </h1>
+          <span id="officer-info" style="font-size: 13px; color: #94a3b8"
+            >Проверка допуска...</span
+          >
+        </div>
+        <a href="/police-cms/dept/court" class="btn btn-primary"
+          >← На портал Суда</a
+        >
+      </div>
+
+      <div class="tabs-bar">
+        <button
+          type="button"
+          class="btn btn-primary tab-btn"
+          data-tab="t-warrants"
+          data-spec="warrant_judge"
+        >
+          Санкции и ордера
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn"
+          data-tab="t-cases"
+          data-spec="trial_judge"
+        >
+          Приём дела в суд
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn"
+          data-tab="t-verdicts"
+          data-spec="trial_judge"
+        >
+          Вынесение приговора
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-outline tab-btn chief-only hidden"
+          data-tab="t-chief-staff"
+        >
+          Штат и допуски
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn chief-only hidden"
+          data-tab="t-chief-stats"
+        >
+          Статистика и сбор
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn chief-only hidden"
+          data-tab="t-chief-news"
+        >
+          Новости и портал
+        </button>
+      </div>
+
+      <!-- === 1. САНКЦИИ И ОРДЕРА === -->
+      <section id="t-warrants" class="panel-card tab-section">
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            gap: 10px;
+          "
+        >
+          <h2 style="font-size: 18px">
+            Рассмотрение запросов на судебные ордера
+          </h2>
+          <button
+            type="button"
+            id="load-pending-warrants-btn"
+            class="btn btn-outline"
+          >
+            Показать ожидающие ордера
+          </button>
+        </div>
+        <form data-endpoint="/court/warrants/:warrantNumber/review">
+          <div class="field-group">
+            <label>Номер ордера (WRT-...)</label
+            ><input
+              type="text"
+              name="warrantNumber"
+              placeholder="WRT-2026-123456"
+              required
+            />
+          </div>
+          <div class="field-group">
+            <label>Решение судьи</label>
+            <select name="decision">
+              <option value="approved">Утвердить и подписать ордер</option>
+              <option value="rejected">Отклонить запрос</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Срок действия ордера (часов)</label
+            ><input
+              type="number"
+              name="validHours"
+              value="72"
+              min="1"
+              max="720"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Вынести постановление по ордеру
+          </button>
+        </form>
+      </section>
+
+      <!-- === 2. ПРИЁМ ДЕЛА В СУД === -->
+      <section id="t-cases" class="panel-card tab-section hidden">
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Регистрация судебного производства
+        </h2>
+        <form data-endpoint="/court/cases">
+          <div class="field-group">
+            <label>Коллегия / Категория дела</label>
+            <select name="category">
+              <option value="criminal">Уголовное дело</option>
+              <option value="administrative">Административное дело</option>
+              <option value="arbitration">
+                Арбитражное (экономическое) дело
+              </option>
+              <option value="appeal">Апелляционная жалоба</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Номер дела следствия (если передано из Милиции/КГБ)</label
+            ><input
+              type="text"
+              name="sourceCaseNumber"
+              placeholder="CASE-2026-..."
+            />
+          </div>
+          <div class="field-group">
+            <label>Истец / Обвинитель (UID, CID или код ведомства)</label
+            ><input type="text" name="plaintiffId" required />
+          </div>
+          <div class="field-group">
+            <label>Ответчик / Подсудимый (UID или CID)</label
+            ><input type="text" name="defendantId" required />
+          </div>
+          <div class="field-group">
+            <label>Суть исковых требований или обвинения</label
+            ><textarea name="summary" rows="4" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Принять к производству
+          </button>
+        </form>
+      </section>
+
+      <!-- === 3. ВЫНЕСЕНИЕ ПРИГОВОРА === -->
+      <section id="t-verdicts" class="panel-card tab-section hidden">
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Вынесение судебного приговора / решения
+        </h2>
+        <form id="court-verdict-form">
+          <div class="field-group">
+            <label>Номер судопроизводства (CRT-...)</label
+            ><input
+              type="text"
+              name="docketNumber"
+              placeholder="CRT-2026-123456"
+              required
+            />
+          </div>
+          <div class="field-group">
+            <label>Вердикт суда</label>
+            <select name="verdictType">
+              <option value="guilty">Виновен (Обвинительный приговор)</option>
+              <option value="acquitted">
+                Невиновен (Оправдательный приговор)
+              </option>
+              <option value="satisfied">Иск удовлетворён</option>
+              <option value="dismissed">В иске отказано</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Срок лишения свободы (дней, 0 — без ареста)</label
+            ><input type="number" name="prisonDays" value="0" min="0" />
+          </div>
+          <div class="field-group">
+            <label>Судебный штраф (сумма)</label
+            ><input
+              type="number"
+              name="fineAmount"
+              value="0"
+              min="0"
+              step="0.01"
+            />
+          </div>
+          <div
+            class="field-group"
+            style="display: flex; gap: 18px; flex-wrap: wrap"
+          >
+            <label
+              style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-weight: 400;
+                cursor: pointer;
+              "
+            >
+              <input type="checkbox" name="revokeLicense" style="width: auto" />
+              Лишить водительского удостоверения
+            </label>
+            <label
+              style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-weight: 400;
+                cursor: pointer;
+              "
+            >
+              <input type="checkbox" name="freezeCompany" style="width: auto" />
+              Ликвидировать / заморозить компанию
+            </label>
+          </div>
+          <div class="field-group">
+            <label>Резолютивная часть приговора</label
+            ><textarea name="resolutionText" rows="4" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Огласить и исполнить приговор
+          </button>
+        </form>
+      </section>
+
+      <!-- === ИНСТРУМЕНТЫ ПРЕДСЕДАТЕЛЯ СУДА И КГБ === -->
+      <section
+        id="t-chief-staff"
+        class="panel-card tab-section chief-only hidden"
+      >
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Назначение судьи и выдача полномочий
+        </h2>
+        <form id="chief-hire-form" style="margin-bottom: 24px">
+          <div class="field-group">
+            <label>UID гражданина</label
+            ><input
+              type="text"
+              name="targetUid"
+              placeholder="UID-123456"
+              required
+            />
+          </div>
+          <div class="field-group">
+            <label>Должность</label
+            ><input type="text" name="rankTitle" value="Судья" required />
+          </div>
+          <div class="field-group">
+            <label>Допуски (можно выбрать несколько одновременно):</label>
+            <div
+              id="hire-specs-list"
+              style="
+                padding: 12px;
+                background: #f8fafc;
+                border-radius: 7px;
+                border: 1px solid var(--border);
+              "
+            ></div>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Зачислить в судейский корпус
+          </button>
+        </form>
+
+        <h3 style="font-size: 17px; margin-bottom: 12px">Судейский состав</h3>
+        <div id="chief-staff-list"></div>
+      </section>
+
+      <section
+        id="t-chief-stats"
+        class="panel-card tab-section chief-only hidden"
+      >
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 10px;
+          "
+        >
+          <h2 style="font-size: 18px">Статистика Судебной системы</h2>
+          <button
+            type="button"
+            id="chief-call-duty-btn"
+            class="btn btn-primary"
+          >
+            📢 Вызвать состав на работу
+          </button>
+        </div>
+        <div
+          id="chief-stats-box"
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+          "
+        ></div>
+      </section>
+
+      <section
+        id="t-chief-news"
+        class="panel-card tab-section chief-only hidden"
+      >
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Публикация постановления Суда в общую ленту
+        </h2>
+        <form id="chief-news-form" style="margin-bottom: 24px">
+          <div class="field-group">
+            <label>Заголовок</label><input type="text" name="title" required />
+          </div>
+          <div class="field-group">
+            <label>Текст постановления</label
+            ><textarea name="content" rows="3" required></textarea>
+          </div>
+          <div class="field-group">
+            <label>Фото URL (не обязательно)</label
+            ><input type="url" name="photoUrl" />
+          </div>
+          <button type="submit" class="btn btn-primary">Опубликовать</button>
+        </form>
+
+        <h3 style="font-size: 17px; margin-bottom: 12px">
+          Настройки портала Суда (home.html)
+        </h3>
+        <form id="chief-portal-form">
+          <div class="field-group">
+            <label>Описание ведомства</label
+            ><textarea name="aboutText" rows="2"></textarea>
+          </div>
+          <div class="field-group">
+            <label>Telegram</label><input type="url" name="telegram" />
+          </div>
+          <div class="field-group">
+            <label>Discord</label><input type="url" name="discord" />
+          </div>
+          <div class="field-group">
+            <label>Форум / Кодексы</label><input type="url" name="forum" />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Сохранить настройки
+          </button>
+        </form>
+      </section>
+
+      <div id="result-box" class="hidden"></div>
+    </main>
+
+    <footer class="site-footer">
+      © 2026 POLICE-CMS — Государственная система управления реестрами
+    </footer>
+
+    <script src="/police-cms/js/general/dept-work.js"></script>
+    <script src="/police-cms/js/court/work.js"></script>
+  </body>
+</html>

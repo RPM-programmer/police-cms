@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ГАИ — Рабочая панель</title>
+    <link rel="stylesheet" href="/police-cms/css/general/general.css" />
+    <link
+      rel="stylesheet"
+      href="/police-cms/css/traffic_police/traffic_police.css"
+    />
+  </head>
+  <body>
+    <main class="container">
+      <div class="work-topbar">
+        <div>
+          <h1 style="font-size: 22px; font-weight: 800">
+            ГАИ — Единая рабочая панель
+          </h1>
+          <span id="officer-info" style="font-size: 13px; color: #94a3b8"
+            >Проверка допуска...</span
+          >
+        </div>
+        <a href="/police-cms/dept/traffic_police" class="btn btn-primary"
+          >← На портал ГАИ</a
+        >
+      </div>
+
+      <!-- Вкладки (Рядовой видит свои допуски, Начальник видит всё + управление) -->
+      <div class="tabs-bar">
+        <button
+          type="button"
+          class="btn btn-primary tab-btn"
+          data-tab="t-search"
+          data-spec="patrol"
+        >
+          Пробив авто
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn"
+          data-tab="t-reg-car"
+          data-spec="vehicle_reg"
+        >
+          Регистрация ТС
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn"
+          data-tab="t-license"
+          data-spec="license_inspector"
+        >
+          Выдача ВУ
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn"
+          data-tab="t-fine"
+          data-spec="patrol"
+        >
+          Выписать штраф
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn"
+          data-tab="t-dtp"
+          data-spec="traffic_controller"
+        >
+          Оформить ДТП
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-outline tab-btn chief-only hidden"
+          data-tab="t-chief-staff"
+        >
+          Штат и допуски
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn chief-only hidden"
+          data-tab="t-chief-stats"
+        >
+          Статистика и сбор
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn chief-only hidden"
+          data-tab="t-chief-news"
+        >
+          Новости и портал
+        </button>
+      </div>
+
+      <!-- === ИНСТРУМЕНТЫ СОТРУДНИКОВ === -->
+      <section id="t-search" class="panel-card tab-section">
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Пробив транспортного средства (Система «Поток»)
+        </h2>
+        <form data-endpoint="/traffic-police/vehicles/:query" data-method="GET">
+          <div class="field-group">
+            <label>Госномер или VIN</label
+            ><input type="text" name="query" placeholder="1234 AB-7" required />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Проверить по базе
+          </button>
+        </form>
+      </section>
+
+      <section id="t-reg-car" class="panel-card tab-section hidden">
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Регистрация транспорта (МРЭО)
+        </h2>
+        <form data-endpoint="/traffic-police/vehicles">
+          <div class="field-group">
+            <label>VIN-номер</label><input type="text" name="vin" required />
+          </div>
+          <div class="field-group">
+            <label>Государственный номер</label
+            ><input type="text" name="plateNumber" required />
+          </div>
+          <div class="field-group">
+            <label>Марка</label><input type="text" name="brand" required />
+          </div>
+          <div class="field-group">
+            <label>Модель</label><input type="text" name="model" required />
+          </div>
+          <div class="field-group">
+            <label>Цвет</label><input type="text" name="color" required />
+          </div>
+          <div class="field-group">
+            <label>Тип владельца</label>
+            <select name="ownerType">
+              <option value="citizen">Гражданин (UID)</option>
+              <option value="company">Компания (CID)</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>ID владельца (UID / CID)</label
+            ><input type="text" name="ownerId" required />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Поставить на учёт
+          </button>
+        </form>
+      </section>
+
+      <section id="t-license" class="panel-card tab-section hidden">
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Выдача водительского удостоверения
+        </h2>
+        <form data-endpoint="/traffic-police/licenses">
+          <div class="field-group">
+            <label>UID гражданина</label
+            ><input
+              type="text"
+              name="citizenUid"
+              placeholder="UID-123456"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Выдать ВУ (Категория B)
+          </button>
+        </form>
+      </section>
+
+      <section id="t-fine" class="panel-card tab-section hidden">
+        <h2 style="font-size: 18px; margin-bottom: 14px">Выписка штрафа ПДД</h2>
+        <form data-endpoint="/traffic-police/fines">
+          <div class="field-group">
+            <label>UID нарушителя</label
+            ><input type="text" name="citizenUid" required />
+          </div>
+          <div class="field-group">
+            <label>Госномер ТС (не обязательно)</label
+            ><input type="text" name="plateNumber" />
+          </div>
+          <div class="field-group">
+            <label>Статья ПДД / КоАП</label
+            ><input type="text" name="article" required />
+          </div>
+          <div class="field-group">
+            <label>Сумма штрафа</label
+            ><input type="number" name="amount" min="1" step="0.01" required />
+          </div>
+          <div class="field-group">
+            <label>Штрафные баллы (при 15 баллах — авто-лишение ВУ)</label
+            ><input
+              type="number"
+              name="pointsAdded"
+              value="0"
+              min="0"
+              max="15"
+            />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Выписать постановление
+          </button>
+        </form>
+      </section>
+
+      <section id="t-dtp" class="panel-card tab-section hidden">
+        <h2 style="font-size: 18px; margin-bottom: 14px">Оформление ДТП</h2>
+        <form data-endpoint="/traffic-police/accidents">
+          <div class="field-group">
+            <label>Место происшествия</label
+            ><input type="text" name="location" required />
+          </div>
+          <div class="field-group">
+            <label>Описание обстоятельств</label
+            ><textarea name="description" rows="4" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Зафиксировать ДТП
+          </button>
+        </form>
+      </section>
+
+      <!-- === ИНСТРУМЕНТЫ НАЧАЛЬНИКА ГАИ И КГБ === -->
+      <section
+        id="t-chief-staff"
+        class="panel-card tab-section chief-only hidden"
+      >
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Приём рядового и выдача совмещаемых допусков
+        </h2>
+        <form id="chief-hire-form" style="margin-bottom: 24px">
+          <div class="field-group">
+            <label>UID гражданина</label
+            ><input
+              type="text"
+              name="targetUid"
+              placeholder="UID-123456"
+              required
+            />
+          </div>
+          <div class="field-group">
+            <label>Звание / Должность</label
+            ><input type="text" name="rankTitle" value="Рядовой" required />
+          </div>
+          <div class="field-group">
+            <label>Допуски (можно выбрать несколько одновременно):</label>
+            <div
+              id="hire-specs-list"
+              style="
+                padding: 12px;
+                background: #f8fafc;
+                border-radius: 7px;
+                border: 1px solid var(--border);
+              "
+            ></div>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Зачислить в штат ГАИ
+          </button>
+        </form>
+
+        <h3 style="font-size: 17px; margin-bottom: 12px">Личный состав ГАИ</h3>
+        <div id="chief-staff-list"></div>
+      </section>
+
+      <section
+        id="t-chief-stats"
+        class="panel-card tab-section chief-only hidden"
+      >
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 10px;
+          "
+        >
+          <h2 style="font-size: 18px">Статистика ГАИ</h2>
+          <button
+            type="button"
+            id="chief-call-duty-btn"
+            class="btn btn-primary"
+          >
+            📢 Вызвать состав на работу
+          </button>
+        </div>
+        <div
+          id="chief-stats-box"
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+          "
+        ></div>
+      </section>
+
+      <section
+        id="t-chief-news"
+        class="panel-card tab-section chief-only hidden"
+      >
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Публикация сводки ГАИ в общую ленту
+        </h2>
+        <form id="chief-news-form" style="margin-bottom: 24px">
+          <div class="field-group">
+            <label>Заголовок</label><input type="text" name="title" required />
+          </div>
+          <div class="field-group">
+            <label>Текст новости</label
+            ><textarea name="content" rows="3" required></textarea>
+          </div>
+          <div class="field-group">
+            <label>Фото URL (не обязательно)</label
+            ><input type="url" name="photoUrl" />
+          </div>
+          <button type="submit" class="btn btn-primary">Опубликовать</button>
+        </form>
+
+        <h3 style="font-size: 17px; margin-bottom: 12px">
+          Настройки портала ГАИ (home.html)
+        </h3>
+        <form id="chief-portal-form">
+          <div class="field-group">
+            <label>Описание ведомства</label
+            ><textarea name="aboutText" rows="2"></textarea>
+          </div>
+          <div class="field-group">
+            <label>Telegram</label><input type="url" name="telegram" />
+          </div>
+          <div class="field-group">
+            <label>Discord</label><input type="url" name="discord" />
+          </div>
+          <div class="field-group">
+            <label>Форум / Устав</label><input type="url" name="forum" />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Сохранить настройки
+          </button>
+        </form>
+      </section>
+
+      <div id="result-box" class="result-box hidden"></div>
+    </main>
+
+    <footer class="site-footer">
+      © 2026 POLICE-CMS — Государственная система управления реестрами
+    </footer>
+
+    <script src="/police-cms/js/general/dept-work.js"></script>
+    <script src="/police-cms/js/traffic_police/work.js"></script>
+  </body>
+</html>

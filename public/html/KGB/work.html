@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>КГБ — Центр управления и госбезопасности</title>
+    <link rel="stylesheet" href="/police-cms/css/general/general.css" />
+    <link rel="stylesheet" href="/police-cms/css/KGB/KGB.css" />
+  </head>
+  <body>
+    <main class="container">
+      <div class="work-topbar">
+        <div>
+          <h1 style="font-size: 22px; font-weight: 800">
+            КГБ — Центр управления и госбезопасности
+          </h1>
+          <span id="officer-info" style="font-size: 13px; color: #a1a1aa"
+            >Проверка формы допуска...</span
+          >
+        </div>
+        <a href="/police-cms/dept/KGB" class="btn btn-primary"
+          >← На портал КГБ</a
+        >
+      </div>
+
+      <div class="tabs-bar">
+        <button
+          type="button"
+          class="btn btn-primary tab-btn"
+          data-tab="t-archive"
+          data-spec="operative"
+        >
+          Секретные архивы
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn"
+          data-tab="t-chiefs"
+          data-spec="internal_security"
+        >
+          Назначение Начальников
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn"
+          data-tab="t-control"
+          data-spec="internal_security"
+        >
+          Управление «К» и Аудит
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn"
+          data-tab="t-state"
+          data-spec="internal_security"
+        >
+          Режим КТО / ЧП
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-outline tab-btn chief-only hidden"
+          data-tab="t-chief-staff"
+        >
+          Штат КГБ
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn chief-only hidden"
+          data-tab="t-chief-stats"
+        >
+          Статистика и сбор
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline tab-btn chief-only hidden"
+          data-tab="t-chief-news"
+        >
+          Новости и портал
+        </button>
+      </div>
+
+      <!-- === 1. СЕКРЕТНЫЕ АРХИВЫ === -->
+      <section id="t-archive" class="panel-card tab-section">
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Создать зашифрованное секретное досье
+        </h2>
+        <form data-endpoint="/kgb/classified" style="margin-bottom: 28px">
+          <div class="field-group">
+            <label>Гриф секретности</label>
+            <select name="secrecyLevel">
+              <option value="dsp">ДСП (Форма допуска №3)</option>
+              <option value="secret">Секретно (Форма допуска №2)</option>
+              <option value="top_secret">
+                Совершенно секретно (Форма допуска №1)
+              </option>
+              <option value="special_importance">
+                Особой важности (Форма допуска №1)
+              </option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Тип объекта</label>
+            <select name="targetType">
+              <option value="citizen">Гражданин (UID)</option>
+              <option value="company">Компания (CID)</option>
+              <option value="officer">Госслужащий (UID)</option>
+              <option value="event">Событие / Операция</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Идентификатор объекта (UID / CID / Код)</label
+            ><input type="text" name="targetId" required />
+          </div>
+          <div class="field-group">
+            <label>Заголовок дела</label
+            ><input type="text" name="title" required />
+          </div>
+          <div class="field-group">
+            <label>Секретные материалы (шифруются AES-256-GCM)</label
+            ><textarea name="jsonPayload" rows="4" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Зашифровать и поместить в архив
+          </button>
+        </form>
+
+        <h3 style="font-size: 17px; margin-bottom: 12px">
+          Расшифровка досье по шифру (KGB-...)
+        </h3>
+        <form data-endpoint="/kgb/classified/:fileCode" data-method="GET">
+          <div class="field-group">
+            <label>Шифр архива</label
+            ><input
+              type="text"
+              name="fileCode"
+              placeholder="KGB-2026-123456"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-outline">
+            Расшифровать материалы
+          </button>
+        </form>
+      </section>
+
+      <!-- === 2. НАЗНАЧЕНИЕ НАЧАЛЬНИКОВ ВЕДОМСТВ === -->
+      <section id="t-chiefs" class="panel-card tab-section hidden">
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Назначение Начальника государственного ведомства
+        </h2>
+        <form data-endpoint="/kgb/appoint-chief">
+          <div class="field-group">
+            <label>Целевое ведомство</label>
+            <select name="departmentCode">
+              <option value="traffic_police">ГАИ</option>
+              <option value="police">Милиция</option>
+              <option value="security">Департамент охраны</option>
+              <option value="border_guards">Пограничная служба</option>
+              <option value="InspectionMinistry">
+                Инспекционное министерство
+              </option>
+              <option value="court">Судебная система</option>
+              <option value="KGB">КГБ</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>UID назначаемого руководителя</label
+            ><input
+              type="text"
+              name="targetUid"
+              placeholder="UID-123456"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Утвердить в должности Начальника
+          </button>
+        </form>
+      </section>
+
+      <!-- === 3. УПРАВЛЕНИЕ «К» И АУДИТ === -->
+      <section id="t-control" class="panel-card tab-section hidden">
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Отстранение госслужащего от должности
+        </h2>
+        <form data-endpoint="/kgb/suspend-officer" style="margin-bottom: 24px">
+          <div class="field-group">
+            <label>Номер служебного жетона</label
+            ><input
+              type="text"
+              name="badgeNumber"
+              placeholder="POLICE-2026-..."
+              required
+            />
+          </div>
+          <div class="field-group">
+            <label>Основание отстранения</label
+            ><textarea name="reason" rows="2" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-danger">
+            Аннулировать допуск и отстранить
+          </button>
+        </form>
+
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+          "
+        >
+          <h3 style="font-size: 17px">
+            Глобальный журнал аудита всех ведомств
+          </h3>
+          <button
+            type="button"
+            id="load-audit-logs-btn"
+            class="btn btn-outline"
+          >
+            Загрузить последние 50 записей
+          </button>
+        </div>
+      </section>
+
+      <!-- === 4. РЕЖИМ КТО / ЧП === -->
+      <section id="t-state" class="panel-card tab-section hidden">
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Управление правовым режимом государства
+        </h2>
+        <form data-endpoint="/kgb/system-state">
+          <div class="field-group">
+            <label>Правовой режим</label>
+            <select name="mode">
+              <option value="normal">Штатный режим (Normal)</option>
+              <option value="cto">
+                Режим КТО (Контртеррористическая операция — закрытие границ)
+              </option>
+              <option value="emergency">Чрезвычайное положение (ЧП)</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Основание / Указ</label
+            ><textarea name="reason" rows="3" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-danger">
+            Применить правовой режим
+          </button>
+        </form>
+      </section>
+
+      <!-- === ИНСТРУМЕНТЫ ПРЕДСЕДАТЕЛЯ КГБ === -->
+      <section
+        id="t-chief-staff"
+        class="panel-card tab-section chief-only hidden"
+      >
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Зачисление сотрудника в КГБ
+        </h2>
+        <form id="chief-hire-form" style="margin-bottom: 24px">
+          <div class="field-group">
+            <label>UID гражданина</label
+            ><input
+              type="text"
+              name="targetUid"
+              placeholder="UID-123456"
+              required
+            />
+          </div>
+          <div class="field-group">
+            <label>Должность / Звание</label
+            ><input
+              type="text"
+              name="rankTitle"
+              value="Оперативник КГБ"
+              required
+            />
+          </div>
+          <div class="field-group">
+            <label>Допуски (можно выбрать несколько):</label>
+            <div
+              id="hire-specs-list"
+              style="
+                padding: 12px;
+                background: #f8fafc;
+                border-radius: 7px;
+                border: 1px solid var(--border);
+              "
+            ></div>
+          </div>
+          <button type="submit" class="btn btn-primary">Зачислить в КГБ</button>
+        </form>
+
+        <h3 style="font-size: 17px; margin-bottom: 12px">Личный состав КГБ</h3>
+        <div id="chief-staff-list"></div>
+      </section>
+
+      <section
+        id="t-chief-stats"
+        class="panel-card tab-section chief-only hidden"
+      >
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 10px;
+          "
+        >
+          <h2 style="font-size: 18px">Сводная статистика Госбезопасности</h2>
+          <button
+            type="button"
+            id="chief-call-duty-btn"
+            class="btn btn-primary"
+          >
+            📢 Объявить тревогу / сбор КГБ
+          </button>
+        </div>
+        <div
+          id="chief-stats-box"
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+          "
+        ></div>
+      </section>
+
+      <section
+        id="t-chief-news"
+        class="panel-card tab-section chief-only hidden"
+      >
+        <h2 style="font-size: 18px; margin-bottom: 14px">
+          Публикация заявления КГБ в общую ленту
+        </h2>
+        <form id="chief-news-form" style="margin-bottom: 24px">
+          <div class="field-group">
+            <label>Заголовок</label><input type="text" name="title" required />
+          </div>
+          <div class="field-group">
+            <label>Текст сообщения</label
+            ><textarea name="content" rows="3" required></textarea>
+          </div>
+          <div class="field-group">
+            <label>Фото URL (не обязательно)</label
+            ><input type="url" name="photoUrl" />
+          </div>
+          <button type="submit" class="btn btn-primary">Опубликовать</button>
+        </form>
+
+        <h3 style="font-size: 17px; margin-bottom: 12px">
+          Настройки портала КГБ (home.html)
+        </h3>
+        <form id="chief-portal-form">
+          <div class="field-group">
+            <label>Описание ведомства</label
+            ><textarea name="aboutText" rows="2"></textarea>
+          </div>
+          <div class="field-group">
+            <label>Telegram</label><input type="url" name="telegram" />
+          </div>
+          <div class="field-group">
+            <label>Discord</label><input type="url" name="discord" />
+          </div>
+          <div class="field-group">
+            <label>Устав / Форум</label><input type="url" name="forum" />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Сохранить настройки
+          </button>
+        </form>
+      </section>
+
+      <div id="result-box" class="hidden"></div>
+    </main>
+
+    <footer class="site-footer">
+      © 2026 POLICE-CMS — Государственная система управления реестрами
+    </footer>
+
+    <script src="/police-cms/js/general/dept-work.js"></script>
+    <script src="/police-cms/js/KGB/work.js"></script>
+  </body>
+</html>

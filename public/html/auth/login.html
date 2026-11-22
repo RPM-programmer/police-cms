@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Вход в систему — POLICE-CMS</title>
+    <link rel="stylesheet" href="/police-cms/css/general/general.css" />
+    <link rel="stylesheet" href="/police-cms/css/auth/auth.css" />
+  </head>
+  <body>
+    <main class="auth-wrapper">
+      <div class="auth-topbar">
+        <a href="/police-cms" class="btn btn-outline">← На главную</a>
+      </div>
+
+      <div class="auth-box">
+        <h1 class="auth-title">Авторизация в системе</h1>
+        <p class="auth-subtitle">
+          Единый вход для граждан и сотрудников ведомств
+        </p>
+
+        <form id="login-form">
+          <div class="field-group">
+            <label>UID гражданина, PID паспорта или Email</label>
+            <input type="text" name="login" placeholder="UID-123456" required />
+          </div>
+
+          <div class="field-group">
+            <label>Пароль</label>
+            <input type="password" name="password" required />
+          </div>
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+            style="width: 100%; padding: 11px"
+          >
+            Войти
+          </button>
+        </form>
+
+        <div id="login-error" class="alert-box error hidden"></div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      © 2026 POLICE-CMS — Государственная система управления реестрами
+    </footer>
+
+    <script src="/police-cms/js/auth/login.js"></script>
+  </body>
+</html>

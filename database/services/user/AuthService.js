@@ -1,5 +1,5 @@
 const CryptoHelper = require("./CryptoHelper");
-
+const { Op } = require("sequelize");
 class AuthService {
   constructor({ db, events }) {
     this.db = db;
@@ -156,15 +156,29 @@ class AuthService {
     };
   }
 
-  // Авторизация по UID, PID или Email
-  async login({ login, password }) {
-    const { Op } = this.db.Sequelize;
+  async login({ login, password } = {}) {
+    const cleanLogin = String(login || "").trim();
+    const cleanPassword = String(password || "").trim();
+
+    if (!cleanLogin || !cleanPassword) {
+      return { success: false, error: "Введите логин и пароль" };
+    }
+
     const citizen = await this.db.Citizen.findOne({
-      where: { [Op.or]: [{ uid: login }, { pid: login }, { email: login }] },
+      where: {
+        [Op.or]: [
+          { uid: cleanLogin },
+          { pid: cleanLogin },
+          { email: cleanLogin },
+        ],
+      },
     });
 
     if (!citizen) {
-      return { success: false, error: "Пользователь не найден" };
+      return {
+        success: false,
+        error: `Пользователь "${cleanLogin}" не найден`,
+      };
     }
 
     if (citizen.status !== "active") {
@@ -175,7 +189,7 @@ class AuthService {
     }
 
     const isMatch = await CryptoHelper.verifyPassword(
-      password,
+      cleanPassword,
       citizen.passwordHash,
     );
     if (!isMatch) {

@@ -1,0 +1,51 @@
+.dept-hero {
+  background: var(--dept-court);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 28px 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 6px 18px rgba(127, 29, 29, 0.22);
+}
+
+.work-topbar {
+  background: var(--bg-nav);
+  color: #ffffff;
+  padding: 18px 24px;
+  border-radius: 10px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  border-left: 6px solid #7f1d1d;
+}
+
+.tabs-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.field-group {
+  margin-bottom: 14px;
+}
+
+.field-group label {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.field-group input,
+.field-group select,
+.field-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-size: 14px;
+}
